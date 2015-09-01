@@ -1,0 +1,65 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="atlassian-data-center-compatible">true</param>
+    </plugin-info>
+
+    <resource type="i18n" name="i18n" location="ru/mail/jira/plugins/jsincluder/jsincluder" />
+
+    <rest key="rest" path="/jsincluder" version="1.0" />
+
+    <!-- Configuration  -->
+
+    <web-item key="jsincluder-configuration-link" section="admin_plugins_menu/top_plugins_section">
+        <label key="ru.mail.jira.plugins.jsincluder.configuration.title" />
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+            <param name="permission">admin</param>
+        </condition>
+        <link>/secure/JsIncluderConfigurationAction!default.jspa</link>
+    </web-item>
+
+    <web-resource key="configuration-resource">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="configuration-page.css" location="ru/mail/jira/plugins/jsincluder/styles/configuration-page.css" />
+        <resource type="download" name="configuration-page.js" location="ru/mail/jira/plugins/jsincluder/scripts/configuration-page.js" />
+    </web-resource>
+
+    <webwork1 key="configuration-action" class="java.lang.Object" roles-required="admin">
+        <actions>
+            <action name="ru.mail.jira.plugins.jsincluder.configuration.JsIncluderConfigurationAction" alias="JsIncluderConfigurationAction">
+                <view name="input">/ru/mail/jira/plugins/jsincluder/templates/configuration-page.vm</view>
+                <view name="success">/ru/mail/jira/plugins/jsincluder/templates/configuration-page.vm</view>
+            </action>
+        </actions>
+    </webwork1>
+
+    <component-import key="ao" interface="com.atlassian.activeobjects.external.ActiveObjects" />
+    <ao key="ao-entities">
+        <entity>ru.mail.jira.plugins.jsincluder.Binding</entity>
+        <entity>ru.mail.jira.plugins.jsincluder.Script</entity>
+    </ao>
+
+    <!-- Controller  -->
+
+    <web-resource key="controller-general">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="controller-general.js" location="ru/mail/jira/plugins/jsincluder/scripts/controller-general.js" />
+        <context>jira.general</context>
+    </web-resource>
+
+    <web-resource key="controller-create">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="controller-create.js" location="ru/mail/jira/plugins/jsincluder/scripts/controller-create.js" />
+        <context>jira.create.issue</context>
+    </web-resource>
+
+    <web-resource key="controller-view">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="controller-view.js" location="ru/mail/jira/plugins/jsincluder/scripts/controller-view.js" />
+        <context>jira.view.issue</context>
+    </web-resource>
+
+</atlassian-plugin>

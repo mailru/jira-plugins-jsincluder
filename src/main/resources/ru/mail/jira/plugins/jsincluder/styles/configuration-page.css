@@ -1,0 +1,47 @@
+.jsincluder-popupLink-active {
+    position: relative;
+}
+
+.jsincluder-popupLink-active:before,
+.jsincluder-popupLink-active:after {
+    border: 8px outset transparent;
+    border-bottom: 8px solid #BBBBBB;
+    bottom: -15px;
+    content: "";
+    height: 0;
+    left: 50%;
+    margin-left: -8px;
+    overflow: hidden;
+    position: absolute;
+    width: 0;
+    z-index: 1000;
+}
+
+.jsincluder-popupLink-active:after {
+    border-bottom-color: white;
+    bottom: -16px;
+}
+
+.jsincluder-popup {
+    background-color: white;
+    border: #BBBBBB solid 1px;
+    border-radius: 3px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+    display: none;
+    padding: 16px 16px 11px;
+    position: absolute;
+    z-index: 1;
+}
+
+.jsincluder-popup#jsincluder-popup-script {
+    width: 700px;
+}
+
+.jsincluder-popup#jsincluder-popup-binding {
+    width: 450px;
+}
+
+.jsincluder-script-code {
+    display: none;
+    white-space: pre;
+}

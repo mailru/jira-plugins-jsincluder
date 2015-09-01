@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>$action.getText("ru.mail.jira.plugins.jsincluder.configuration.title")</title>
+    <meta name="decorator" content="admin"/>
+    <meta name="admin.active.section" content="admin_plugins_menu/top_plugins_section">
+    <meta name="admin.active.tab" content="jsincluder-configuration-link">
+    $webResourceManager.requireResource("jira.webresources:global-static")
+    $webResourceManager.requireResource("jira.webresources:jira-global")
+    $webResourceManager.requireResource("ru.mail.jira.plugins.jsincluder:configuration-resource")
+</head>
+<body class="aui">
+    <header class="aui-page-header">
+        <div class="aui-page-header-inner">
+            <div class="aui-page-header-main">
+                <h2>Configure JsIncluder Plugin</h2>
+            </div>
+            <div class="aui-page-header-actions">
+                <div class="aui-buttons">
+                    <a href="#" id="jsincluder-addScript" class="aui-button jsincluder-popupLink">
+                        <span class="icon jira-icon-add"></span>
+                        Add Script
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="module">
+        <div class="mod-content">
+            <table class="aui aui-table-rowhover">
+                <thead>
+                <tr>
+                    <th>Script</th>
+                    <th>Bindings</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody id="jsincluder-scripts">
+                    #foreach( $script in $action.scripts )
+                    <tr id="$script.getID()" class="jsincluder-script">
+                        <td>
+                            <strong class="jsincluder-script-name">$script.name</strong>
+                            <textarea class="jsincluder-script-code">$script.code</textarea>
+                        </td>
+                        <td>
+                            <ul class="jsincluder-bindings">
+                                #foreach( $binding in $script.bindings )
+                                <li id="$binding.getID()" class="jsincluder-binding">
+                                    <strong>Projects:</strong> <span class="jsincluder-binding-projectKeys">$binding.projectKeys</span><br/>
+                                    <strong>Issue Types:</strong> <span class="jsincluder-binding-issueTypeIds">$binding.issueTypeIds</span><br/>
+                                    <strong>Contexts:</strong> <span class="jsincluder-binding-enabledContexts">$action.getEnabledContexts($binding)</span><br/>
+                                    <div class="jsincluder-binding-createContextEnabled" style="display: none;">$binding.createContextEnabled</div>
+                                    <div class="jsincluder-binding-viewContextEnabled" style="display: none;">$binding.viewContextEnabled</div>
+                                    <div class="jsincluder-binding-editContextEnabled" style="display: none;">$binding.editContextEnabled</div>
+                                    <div class="jsincluder-binding-transitionContextEnabled" style="display: none;">$binding.transitionContextEnabled</div>
+                                    <ul class="operations-list">
+                                        <li><a href="#" class="jsincluder-editBinding jsincluder-popupLink">Edit</a></li>
+                                        <li><a href="#" class="jsincluder-deleteBinding">Delete</a></li>
+                                    </ul>
+                                </li>
+                                #end
+                            </ul>
+                            <a href="#" class="jsincluder-addBinding jsincluder-popupLink">Add</a>
+                        </td>
+                        <td>
+                            <ul class="operations-list">
+                                <li><a href="#" class="jsincluder-editScript jsincluder-popupLink">Edit</a></li>
+                                <li><a href="#" class="jsincluder-deleteScript">Delete</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="jsincluder-popup-script" class="jsincluder-popup">
+        <form class="aui">
+            <div class="form-body">
+                <input type="hidden" id="jsincluder-popup-script-id" />
+                <div class="field-group">
+                    <label for="jsincluder-popup-script-name">Name:</label>
+                    <input type="text" id="jsincluder-popup-script-name" class="text long-field" />
+                </div>
+                <div class="field-group">
+                    <label for="jsincluder-popup-script-code">Code:</label>
+                    <textarea id="jsincluder-popup-script-code" wrap="off" rows="3" class="textarea long-field"></textarea>
+                    <div class="description">
+                        You can use different JS_INCLUDER.params.* variables.
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-container form-footer">
+                <div class="buttons">
+                    <input type="button" id="jsincluder-popup-script-ok" value="OK" class="aui-button" />
+                    <input type="button" id="jsincluder-popup-script-apply" value="Apply" class="aui-button" />
+                    <a href="#" class="aui-button aui-button-link cancel">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="jsincluder-popup-binding" class="jsincluder-popup">
+        <form class="aui">
+            <div class="form-body">
+                <input type="hidden" id="jsincluder-popup-binding-scriptId" />
+                <input type="hidden" id="jsincluder-popup-binding-id" />
+                <div class="field-group">
+                    <label for="jsincluder-popup-binding-projectKeys">Project Keys:</label>
+                    <input type="text" id="jsincluder-popup-binding-projectKeys" class="text" />
+                </div>
+                <div class="field-group">
+                    <label for="jsincluder-popup-binding-issueTypeIds">Issue Type Ids:</label>
+                    <input type="text" id="jsincluder-popup-binding-issueTypeIds" class="text" />
+                </div>
+                <fieldset class="group">
+                    <legend><span>Contexts:</span></legend>
+                    <div class="checkbox">
+                        <input type="checkbox" id="jsincluder-popup-binding-createContextEnabled" class="checkbox">
+                        <label for="jsincluder-popup-binding-createContextEnabled">Create</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="jsincluder-popup-binding-viewContextEnabled" class="checkbox">
+                        <label for="jsincluder-popup-binding-viewContextEnabled">View</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="jsincluder-popup-binding-editContextEnabled" class="checkbox">
+                        <label for="jsincluder-popup-binding-editContextEnabled">Edit</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="jsincluder-popup-binding-transitionContextEnabled" class="checkbox">
+                        <label for="jsincluder-popup-binding-transitionContextEnabled">Transition</label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="buttons-container form-footer">
+                <div class="buttons">
+                    <input type="button" id="jsincluder-popup-binding-ok" value="OK" class="aui-button" />
+                    <a href="#" class="aui-button aui-button-link cancel">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
