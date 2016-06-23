@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.jsincluder.Binding;
 
+import java.util.List;
+
 public class Version2UpgradeTask implements ActiveObjectsUpgradeTask {
     private final ProjectManager projectManager;
 
@@ -34,10 +36,17 @@ public class Version2UpgradeTask implements ActiveObjectsUpgradeTask {
             ao.executeInTransaction(new TransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() {
-                    for (Binding oldBinding : ao.find(Binding.class))
-                        for (String projectKey : CommonUtils.split(oldBinding.getProjectKeys())) {
-                            Project project = projectManager.getProjectObjByKey(projectKey);
+                    for (Binding oldBinding : ao.find(Binding.class)) {
+                        List<String> projectKeys = CommonUtils.split(oldBinding.getProjectKeys());
+                        for (int i = 0; i < projectKeys.size(); i++) {
+                            Project project = projectManager.getProjectObjByKey(projectKeys.get(i));
                             if (project != null) {
+                                if (i == 0) {
+                                    oldBinding.setProjectId(project.getId());
+                                    oldBinding.save();
+                                    continue;
+                                }
+
                                 Binding binding = ao.create(Binding.class);
                                 binding.setScript(oldBinding.getScript());
                                 binding.setProjectId(project.getId());
@@ -49,9 +58,12 @@ public class Version2UpgradeTask implements ActiveObjectsUpgradeTask {
                                 binding.save();
                             }
                         }
+                    }
                     return null;
                 }
             });
         }
     }
+
+
 }
