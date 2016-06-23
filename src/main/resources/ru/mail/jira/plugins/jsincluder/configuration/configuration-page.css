@@ -1,0 +1,154 @@
+ul.jsincluder-bindings > li {
+    list-style: none;
+}
+
+ul.jsincluder-bindings > li:not(:first-child) {
+    padding-top: 15px;
+}
+
+.jsincluder-issue-types-list {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.jsincluder-issue-types-list > li {
+    display: inline-block;
+}
+
+.jsincluder-issue-types-list li + li:before {
+    content: "\b7";
+    padding: 0 3px 0 3px;
+    color: #707070;
+}
+
+.jsincluder-issue-types-list .icon {
+    margin-top: 2px;
+    padding-right: 5px;
+}
+
+#jsincluder-configuration-dialog {
+    width: 1080px !important;
+}
+
+#jsincluder-configuration-dialog form {
+    margin: 0;
+    padding: 10px 20px 0 20px;
+    max-height: 348px;
+}
+
+#jsincluder-configuration-dialog .aui-dialog2-content {
+    display: table;
+    padding: 0;
+}
+
+#jsincluder-configuration-dialog .aui-navgroup {
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    display: table-cell;
+    width: 20%;
+    padding: 10px 10px 20px 10px;
+    vertical-align: top;
+}
+
+#jsincluder-configuration-dialog-general-tab,
+#jsincluder-configuration-dialog-bindings-tab {
+    display: table-cell;
+    width: 850px;
+    overflow-y: scroll;
+}
+
+.jsincluder-configuration-dialog-error-field {
+    border-color: red !important;
+}
+
+#jsincluder-add-binding {
+    margin: 5px;
+}
+
+#jsincluder-add-binding-row {
+    background-color: #f0f0f0 !important;
+}
+
+#jsincluder-configuration-dialog .select2-container.select2-allowclear .select2-choice .select2-chosen {
+    margin-right: 26px !important;
+}
+
+.jsincluder-binding-editable-field {
+    position: relative;
+    padding: 4px 24px 4px 4px;
+}
+
+.jsincluder-binding-editable-field:hover {
+    background: #fffdf6;
+    cursor: pointer;
+}
+
+.jsincluder-binding-editable-field .aui-iconfont-edit {
+    visibility: hidden;
+    position: absolute;
+    right: 4px;
+    top: 5px;
+}
+
+.jsincluder-binding-editable-field:hover .aui-iconfont-edit {
+    visibility: visible !important;
+}
+
+.jsincluder-binding-editable-field span i {
+    padding-left: 18px;
+}
+
+#jsincluder-configuration-dialog-bindings-table th.jsincluder-binding-context,
+#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-context {
+    text-align: center;
+    padding: 12px 10px !important;
+}
+
+.jsincluder-binding-operations {
+    min-width: 126px;
+    text-align: center !important;
+    padding: 12px 10px !important;
+}
+
+#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-project {
+    width: 200px;
+}
+
+#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-issueTypes {
+    width: 170px;
+}
+
+ul.jsincluder-binding-issueTypes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.jsincluder-binding-issueTypes-list > li {
+    padding: 0 0 3px 20px;
+}
+
+ul.jsincluder-binding-issueTypes-list > li {
+    padding: 0 0 3px 20px;
+}
+
+ul.jsincluder-binding-issueTypes-list > li:not(:first-child) {
+    padding-top: 3px;
+}
+
+ul.jsincluder-binding-issueTypes-list .icon {
+    float: left;
+    margin-top: 2px;
+    margin-left: -20px;
+}
+
+.select2-container.jsincluder-binding-issueTypes ul > li.select2-search-choice {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+a.jsincluder-binding-delete:link {
+    color: #707070;
+}

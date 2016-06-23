@@ -1,0 +1,74 @@
+<section role="dialog" id="jsincluder-configuration-dialog" class="aui-layer aui-dialog2 aui-dialog2-xlarge" aria-hidden="true">
+    <header class="aui-dialog2-header">
+        <h2 id="jsincluder-configuration-dialog-header" class="aui-dialog2-header-main"></h2>
+    </header>
+    <div class="aui-dialog2-content">
+        <nav class="aui-navgroup aui-navgroup-vertical">
+            <div class="aui-navgroup-inner">
+                <ul class="aui-nav">
+                    <li class="aui-nav-selected">
+                        <a href="#jsincluder-configuration-dialog-general-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.general" )</a>
+                    </li>
+                    <li>
+                        <a href="#jsincluder-configuration-dialog-bindings-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings" )</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="jsincluder-configuration-dialog-general-tab">
+            <form class="aui unsectioned ajs-dirty-warning-exempt jsincluder-configuration-dialog-form">
+                <input class="hidden" type="submit"/>
+                <div class="aui-message aui-message-error jsincluder-configuration-dialog-error-panel hidden"></div>
+                <div class="field-group">
+                    <label for="jsincluder-configuration-dialog-name">
+                        <span class="aui-icon icon-required"></span>
+                        $i18n.getText( "common.words.name" )
+                    </label>
+                    <input class="text full-width-field" type="text" id="jsincluder-configuration-dialog-name" maxlength="254">
+                    <div id="jsincluder-configuration-dialog-name-error" class="error hidden"></div>
+                </div>
+                <div class="field-group">
+                    <label for="jsincluder-configuration-dialog-code">
+                        <span class="aui-icon icon-required"></span>
+                        $i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.script.code" )
+                    </label>
+                    <textarea class="textarea full-width-field" type="text" id="jsincluder-configuration-dialog-code" cols="40" rows="5" value=""></textarea>
+                    <div id="jsincluder-configuration-dialog-code-error" class="error hidden"></div>
+                </div>
+            </form>
+        </div>
+        <div id="jsincluder-configuration-dialog-bindings-tab">
+            <form class="aui unsectioned ajs-dirty-warning-exempt jsincluder-configuration-dialog-form">
+                <input class="hidden" type="submit"/>
+                <div class="aui-message aui-message-error jsincluder-configuration-dialog-error-panel hidden"></div>
+                <table id="jsincluder-configuration-dialog-bindings-table" class="aui aui-table-rowhover">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Issue Types</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.create" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.view" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.edit" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "admin.workflowtransition.transition" )</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="jsincluder-add-binding">
+                    <button class="aui-button aui-button-link">
+                        $i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.addBinding" )
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer class="aui-dialog2-footer" style="width: 100%">
+        <div class="aui-dialog2-footer-actions">
+            <button id="jsincluder-configuration-dialog-ok" class="aui-button aui-button-primary"></button>
+            <button id="jsincluder-configuration-dialog-cancel" class="aui-button aui-button-link">$i18n.getText( "common.words.cancel" )</button>
+        </div>
+        <div class="aui-dialog2-footer-hint"></div>
+    </footer>
+</section>

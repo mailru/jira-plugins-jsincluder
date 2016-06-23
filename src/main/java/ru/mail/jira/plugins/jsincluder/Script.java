@@ -8,9 +8,11 @@ import net.java.ao.schema.StringLength;
 public interface Script extends Entity {
     String getName();
     void setName(String name);
+
     @StringLength(StringLength.UNLIMITED)
     String getCode();
     void setCode(String code);
+
     @OneToMany
     public Binding[] getBindings();
 }

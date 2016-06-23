@@ -1,0 +1,237 @@
+{namespace JIRA.Templates.Plugins.JsIncluder}
+
+/**
+ * Script entries list
+ * @param script script
+ */
+{template .scriptEntry autoescape="false"}
+    <tr id="{$script.id}" class="jsincluder-script">
+        <td>
+            <strong class="jsincluder-script-name">{$script.name}</strong>
+        </td>
+        <td>
+            <ul class="jsincluder-bindings">
+                {foreach $binding in $script.bindings}
+                    <li id="{$binding.id}" class="jsincluder-binding">
+                        {if $binding.project}
+                            <span>
+                                <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
+                                     <span class="aui-avatar-inner"><img src="{$binding.project.avatarUrl}" /></span>
+                                </span>
+                                {sp}{$binding.project.name}
+                            </span>
+                        {else}
+                            <span><i>{getText('common.filters.allprojects')}</i></span>
+                        {/if}<br/>
+                        {if $binding.issueTypes.length == 0}
+                            <span><i>{getText('common.filters.all.types')}</i></span>
+                        {/if}
+                        <ul class="jsincluder-issue-types-list">
+                            {foreach $issueType in $binding.issueTypes}
+                                <li>
+                                    <span>
+                                        <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+                                        <span class="project-config-issuetype-name">{$issueType.name}</span>
+                                    </span>
+                                </li>
+                            {/foreach}
+                        </ul><br/>
+                        <span class="jsincluder-binding-enabledContexts">{$binding.enabledContexts}</span><br/>
+                        <div class="jsincluder-binding-createContextEnabled" style="display: none;">{$binding.createContextEnabled}</div>
+                        <div class="jsincluder-binding-viewContextEnabled" style="display: none;">{$binding.viewContextEnabled}</div>
+                        <div class="jsincluder-binding-editContextEnabled" style="display: none;">{$binding.editContextEnabled}</div>
+                        <div class="jsincluder-binding-transitionContextEnabled" style="display: none;">{$binding.transitionContextEnabled}</div>
+                    </li>
+                {/foreach}
+            </ul>
+        </td>
+        <td>
+            <ul class="operations-list">
+                <li><a href="#" class="jsincluder-editScript">{getText('common.words.edit')}</a></li>
+                <li><a href="#" class="jsincluder-deleteScript">{getText('common.words.delete')}</a></li>
+            </ul>
+        </td>
+    </tr>
+{/template}
+
+
+
+/**
+ * Binding table cell
+ * @param binding binding
+*/
+{template .bindingEntry}
+<tr data-id="{$binding.id}" class="jsincluder-binding-view">
+    <td class="jsincluder-binding-project">
+        <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
+            {if $binding.project}
+                <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
+                    <span class="aui-avatar-inner"><img src="{$binding.project.avatarUrl}" /></span>
+                </span>
+                {sp}{$binding.project.name}
+            {else}
+                <span><i>{getText('common.filters.allprojects')}</i></span>
+            {/if}
+            <span class="aui-icon aui-icon-small aui-iconfont-edit"></span>
+        </div>
+    </td>
+    <td class="jsincluder-binding-issueTypes">
+        <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
+            {if $binding.issueTypes.length == 0}
+                <span><i>{getText('common.filters.all.types')}</i></span>
+            {/if}
+            <ul class="jsincluder-binding-issueTypes-list">
+                {foreach $issueType in $binding.issueTypes}
+                    <li>
+                        <span>
+                            <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+                            <span class="project-config-issuetype-name">{$issueType.name}</span>
+                        </span>
+                    </li>
+                {/foreach}
+            </ul>
+            <span class="aui-icon aui-icon-small aui-iconfont-edit"></span>
+        </div>
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.createContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-createContextEnabled" type="checkbox" value="{$binding.createContextEnabled}">
+        {else}
+            <input class="checkbox jsincluder-binding-createContextEnabled" type="checkbox" value="">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.viewContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox" value="{$binding.viewContextEnabled}">
+        {else}
+            <input class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox" value="">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+            {if $binding.editContextEnabled}
+                <input checked="checked" class="checkbox jsincluder-binding-editContextEnabled" type="checkbox" value="{$binding.editContextEnabled}">
+            {else}
+                <input class="checkbox jsincluder-binding-editContextEnabled" type="checkbox" value="">
+            {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.transitionContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox" value="{$binding.transitionContextEnabled}">
+        {else}
+            <input class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox" value="">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-operations">
+        <a href="#" class="jsincluder-binding-delete">
+            <span class="aui-icon aui-icon-small aui-iconfont-remove">{getText('common.words.delete')}</span>
+        </a>
+    </td>
+</tr>
+{/template}
+
+/**
+ * Binding create project table cell
+*/
+{template .bindingAddEntry}
+<tr id="jsincluder-add-binding-row" data-id="">
+    <td>
+        <input type="hidden" class="select full-width-field jsincluder-binding-project"/>
+    </td>
+    <td>
+        <input type="hidden" class="select full-width-field jsincluder-binding-issueTypes"/>
+    </td>
+    <td class="jsincluder-binding-context">
+        <input type="checkbox" class="checkbox jsincluder-binding-createContextEnabled">
+    </td>
+    <td class="jsincluder-binding-context">
+            <input type="checkbox" class="checkbox jsincluder-binding-viewContextEnabled">
+    </td>
+    <td class="jsincluder-binding-context">
+        <input type="checkbox" class="checkbox jsincluder-binding-editContextEnabled">
+    </td>
+    <td class="jsincluder-binding-context">
+        <input type="checkbox" class="checkbox jsincluder-binding-transitionContextEnabled">
+    </td>
+    <td class="jsincluder-binding-operations">
+        <button id="jsincluder-binding-create" class="aui-button" resolved>{getText('common.words.create')}</button>
+        <button id="jsincluder-binding-create-cancel" class="aui-button aui-button-link" resolved>{getText('common.words.cancel')}</button>
+    </td>
+</tr>
+{/template}
+
+/**
+ * Binding edit project table cell
+ * @param binding binding
+*/
+{template .bindingEditEntry}
+<tr class="jsincluder-edit-binding-row" data-id="{$binding.id}">
+    <td>
+        <input type="hidden" class="select full-width-field jsincluder-binding-project"/>
+    </td>
+    <td>
+        <input type="hidden" class="select full-width-field jsincluder-binding-issueTypes"/>
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.createContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-createContextEnabled" type="checkbox">
+        {else}
+            <input class="checkbox jsincluder-binding-createContextEnabled" type="checkbox">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.viewContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox">
+        {else}
+            <input class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.editContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-editContextEnabled" type="checkbox">
+        {else}
+            <input class="checkbox jsincluder-binding-editContextEnabled" type="checkbox">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-context">
+        {if $binding.transitionContextEnabled}
+            <input checked="checked" class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox">
+        {else}
+            <input class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox">
+        {/if}
+    </td>
+    <td class="jsincluder-binding-operations">
+        <button class="aui-button jsincluder-binding-edit-save" resolved>{getText('common.words.update')}</button>
+        <button class="aui-button aui-button-link jsincluder-binding-edit-cancel" resolved>{getText('common.words.cancel')}</button>
+    </td>
+</tr>
+{/template}
+
+/**
+ * Project field
+ * @param project project
+*/
+{template .projectField autoescape="false"}
+    <div title="{$project.name}">
+        {if $project.id != -1}
+            <span class="aui-avatar aui-avatar-xsmall">
+                <span class="aui-avatar-inner">
+                    <img src="{$project.avatarUrl}" />
+                </span>
+            </span>
+            {sp}{$project.name}
+        {else}
+            <i>{$project.name}</i>
+        {/if}
+    </div>
+{/template}
+
+/**
+ * Project field
+ * @param issueType issueType
+*/
+{template .issueTypeField autoescape="false"}
+    <span>
+        <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+        <span class="project-config-issuetype-name">{sp}{$issueType.name}</span>
+    </span>
+{/template}
