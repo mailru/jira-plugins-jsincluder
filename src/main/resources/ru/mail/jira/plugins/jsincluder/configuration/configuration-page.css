@@ -17,7 +17,7 @@ ul.jsincluder-bindings > li:not(:first-child) {
     display: inline-block;
 }
 
-.jsincluder-issue-types-list li + li:before {
+.jsincluder-issue-types-list li:not(:last-child):after {
     content: "\b7";
     padding: 0 3px 0 3px;
     color: #707070;
@@ -26,6 +26,10 @@ ul.jsincluder-bindings > li:not(:first-child) {
 .jsincluder-issue-types-list .icon {
     margin-top: 2px;
     padding-right: 5px;
+}
+
+.jsincluder-operations {
+    min-width: 100px;
 }
 
 #jsincluder-configuration-dialog {
@@ -144,9 +148,8 @@ ul.jsincluder-binding-issueTypes-list .icon {
     margin-left: -20px;
 }
 
-.select2-container.jsincluder-binding-issueTypes ul > li.select2-search-choice {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+.select2-container.jsincluder-binding-issueTypes ul.select2-choices {
+    padding: 3px 5px !important;
 }
 
 a.jsincluder-binding-delete:link {

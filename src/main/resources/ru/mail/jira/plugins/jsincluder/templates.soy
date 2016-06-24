@@ -21,10 +21,10 @@
                                 {sp}{$binding.project.name}
                             </span>
                         {else}
-                            <span><i>{getText('common.filters.allprojects')}</i></span>
+                            <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')}</i></span>
                         {/if}<br/>
                         {if $binding.issueTypes.length == 0}
-                            <span><i>{getText('common.filters.all.types')}</i></span>
+                            <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all')}</i></span>
                         {/if}
                         <ul class="jsincluder-issue-types-list">
                             {foreach $issueType in $binding.issueTypes}
@@ -36,16 +36,18 @@
                                 </li>
                             {/foreach}
                         </ul><br/>
-                        <span class="jsincluder-binding-enabledContexts">{$binding.enabledContexts}</span><br/>
-                        <div class="jsincluder-binding-createContextEnabled" style="display: none;">{$binding.createContextEnabled}</div>
-                        <div class="jsincluder-binding-viewContextEnabled" style="display: none;">{$binding.viewContextEnabled}</div>
-                        <div class="jsincluder-binding-editContextEnabled" style="display: none;">{$binding.editContextEnabled}</div>
-                        <div class="jsincluder-binding-transitionContextEnabled" style="display: none;">{$binding.transitionContextEnabled}</div>
+                        <span class="jsincluder-binding-enabledContexts">
+                            {if $binding.enabledContexts.length}
+                                {$binding.enabledContexts}
+                            {else}
+                                <i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.context.all')}</i>
+                            {/if}
+                        </span><br/>
                     </li>
                 {/foreach}
             </ul>
         </td>
-        <td>
+        <td class="jsincluder-operations">
             <ul class="operations-list">
                 <li><a href="#" class="jsincluder-editScript">{getText('common.words.edit')}</a></li>
                 <li><a href="#" class="jsincluder-deleteScript">{getText('common.words.delete')}</a></li>
@@ -70,7 +72,7 @@
                 </span>
                 {sp}{$binding.project.name}
             {else}
-                <span><i>{getText('common.filters.allprojects')}</i></span>
+                <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')}</i></span>
             {/if}
             <span class="aui-icon aui-icon-small aui-iconfont-edit"></span>
         </div>
@@ -78,7 +80,7 @@
     <td class="jsincluder-binding-issueTypes">
         <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
             {if $binding.issueTypes.length == 0}
-                <span><i>{getText('common.filters.all.types')}</i></span>
+                <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all')}</i></span>
             {/if}
             <ul class="jsincluder-binding-issueTypes-list">
                 {foreach $issueType in $binding.issueTypes}

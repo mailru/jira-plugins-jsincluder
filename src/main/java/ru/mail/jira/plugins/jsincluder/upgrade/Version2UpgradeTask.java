@@ -64,6 +64,4 @@ public class Version2UpgradeTask implements ActiveObjectsUpgradeTask {
             });
         }
     }
-
-
 }

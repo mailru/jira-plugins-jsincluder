@@ -30,7 +30,7 @@
             <tr>
                 <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.script" )</th>
                 <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings" )</th>
-                <th>$i18n.getText( "common.words.operations" )</th>
+                <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.operations" )</th>
             </tr>
             </thead>
             <tbody id="jsincluder-scripts">

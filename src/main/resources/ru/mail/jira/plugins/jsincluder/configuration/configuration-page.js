@@ -28,24 +28,26 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
         var MainView = Backbone.View.extend({
             el: 'section#content',
             events: {
-                'click #jsincluder-addScript': 'addScript',
-                'click .jsincluder-editScript': 'editScript',
-                'click .jsincluder-deleteScript': 'deleteScript'
+                'click #jsincluder-addScript': 'showAddScriptDialog',
+                'click .jsincluder-editScript': 'showEditScriptDialog',
+                'click .jsincluder-deleteScript': 'showDeleteScriptDialog'
             },
             initialize: function() {
-                this.collection.on('remove', this._rebuildScriptsList);
-                this.collection.on('change', this._rebuildScriptsList);
-                this.collection.on('add', this._rebuildScriptsList);
+                this.collection.on('request', this.startLoadingScriptsCallback);
+                this.collection.on('sync', this.finishLoadingScriptsCallback);
+                this.collection.on('add', this._addScript, this);
+                this.collection.on('change', this._changeScript, this);
+                this.collection.on('remove', this._removeScript, this);
             },
-            startLoadingCalendarsCallback: function() {
+            startLoadingScriptsCallback: function() {
                 AJS.dim();
                 JIRA.Loading.showLoadingIndicator();
             },
-            finishLoadingCalendarsCallback: function() {
+            finishLoadingScriptsCallback: function() {
                 JIRA.Loading.hideLoadingIndicator();
                 AJS.undim();
             },
-            addScript : function(e) {
+            showAddScriptDialog : function(e) {
                 e.preventDefault();
 
                 var configurationDialogView = new ConfigurationDialog({
@@ -55,7 +57,7 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                 });
                 configurationDialogView.show();
             },
-            editScript: function(e){
+            showEditScriptDialog: function(e){
                 e.preventDefault();
 
                 var scriptId = $(e.currentTarget).parents('.jsincluder-script').attr('id');
@@ -82,7 +84,7 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                     }
                 });
             },
-            deleteScript: function(e) {
+            showDeleteScriptDialog: function(e) {
                 e.preventDefault();
 
                 var script = this.collection.get($(e.currentTarget).parents('.jsincluder-script').attr('id'));
@@ -106,24 +108,20 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
 
                 confirmDialog.show();
             },
-            _rebuildScriptsList: function(e) {
-                mainView.startLoadingCalendarsCallback();
-                var htmlScripts = '';
-                mainView.collection.each(function(sctipt) {
-                    htmlScripts += JIRA.Templates.Plugins.JsIncluder.scriptEntry({
-                        script: sctipt.toJSON()
-                    });
-                });
-                $('#jsincluder-scripts').empty().append(htmlScripts);
-
-                mainView.finishLoadingCalendarsCallback();
+            _addScript: function(script) {
+                $('#jsincluder-scripts').append(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));
+            },
+            _changeScript: function(script) {
+                $('#jsincluder-scripts tr#' + script.id).replaceWith(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));
+            },
+            _removeScript: function(script) {
+                $('#jsincluder-scripts tr[id="' + script.id + '"]').remove();
             }
         });
 
         var mainView = new MainView({collection: scriptCollection});
 
         /* Fetch data */
-        scriptCollection.fetch({
-        });
+        scriptCollection.fetch();
     });
 });

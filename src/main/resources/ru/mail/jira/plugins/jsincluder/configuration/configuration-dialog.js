@@ -1,6 +1,6 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editor;
-    var allProjects = {id: -1, name: AJS.I18n.getText('common.filters.allprojects'), avatarUrl: ''};
+    var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all'), avatarUrl: ''};
     return Backbone.View.extend({
         el: '#jsincluder-configuration-dialog',
         events: {
@@ -113,7 +113,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         },
         _initIssueTypesField: function($row) {
             $row.find('.jsincluder-binding-issueTypes').auiSelect2({
-                placeholder: AJS.I18n.getText('common.filters.all.types'),
+                placeholder: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all'),
                 allowClear: true,
                 multiple: true,
                 ajax: {
@@ -165,8 +165,6 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 if (htmlBindings.length)
                     $('#jsincluder-configuration-dialog-bindings-table tbody').append(htmlBindings);
             } else {
-                console.log(this.scripts.findWhere({name: 'Script 1'}) == null);
-                console.log(this.scripts.findWhere({name: 'Script 2'}) == null);
                 var i = 1;
                 while(true) {
                     if (this.scripts.findWhere({name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.script.default', i)}) != null) {

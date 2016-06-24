@@ -22,7 +22,7 @@
                 <div class="field-group">
                     <label for="jsincluder-configuration-dialog-name">
                         <span class="aui-icon icon-required"></span>
-                        $i18n.getText( "common.words.name" )
+                        $i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.script.name" )
                     </label>
                     <input class="text full-width-field" type="text" id="jsincluder-configuration-dialog-name" maxlength="254">
                     <div id="jsincluder-configuration-dialog-name-error" class="error hidden"></div>
@@ -44,12 +44,12 @@
                 <table id="jsincluder-configuration-dialog-bindings-table" class="aui aui-table-rowhover">
                     <thead>
                         <tr>
-                            <th>Project</th>
-                            <th>Issue Types</th>
-                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.create" )</th>
-                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.view" )</th>
-                            <th class="jsincluder-binding-context">$i18n.getText( "common.words.edit" )</th>
-                            <th class="jsincluder-binding-context">$i18n.getText( "admin.workflowtransition.transition" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.context.crete" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.context.view" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.context.edit" )</th>
+                            <th class="jsincluder-binding-context">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.context.transition" )</th>
                             <th></th>
                         </tr>
                     </thead>
