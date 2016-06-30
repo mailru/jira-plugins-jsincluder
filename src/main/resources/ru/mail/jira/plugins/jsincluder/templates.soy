@@ -30,7 +30,7 @@
                             {foreach $issueType in $binding.issueTypes}
                                 <li>
                                     <span>
-                                        <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+                                        <img class="icon jira-icon-image" alt="" height="16" src="{$issueType.iconUrl}" title="{$issueType.name}" width="16">
                                         <span class="project-config-issuetype-name">{$issueType.name}</span>
                                     </span>
                                 </li>
@@ -86,7 +86,7 @@
                 {foreach $issueType in $binding.issueTypes}
                     <li>
                         <span>
-                            <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+                            <img class="icon jira-icon-image" alt="" height="16" src="{$issueType.iconUrl}" title="{$issueType.name}" width="16">
                             <span class="project-config-issuetype-name">{$issueType.name}</span>
                         </span>
                     </li>
@@ -233,7 +233,7 @@
 */
 {template .issueTypeField autoescape="false"}
     <span>
-        <img class="icon jira-icon-image" alt="" height="16" src="/jira{$issueType.iconUrl}" title="{$issueType.name}" width="16">
+        <img class="icon jira-icon-image" alt="" height="16" src="{$issueType.iconUrl}" title="{$issueType.name}" width="16">
         <span class="project-config-issuetype-name">{sp}{$issueType.name}</span>
     </span>
 {/template}

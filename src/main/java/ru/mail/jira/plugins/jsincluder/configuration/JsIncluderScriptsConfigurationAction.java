@@ -10,6 +10,7 @@ import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.util.I18nHelper;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
+import com.atlassian.sal.api.websudo.WebSudoNotRequired;
 import com.atlassian.sal.api.websudo.WebSudoRequired;
 import org.apache.commons.lang3.StringUtils;
 import ru.mail.jira.plugins.commons.CommonUtils;
@@ -52,13 +53,13 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
         this.scriptManager = scriptManager;
     }
 
-    private boolean isUserAllowed() {
-        return globalPermissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, getLoggedInApplicationUser());
-    }
-
     @Override
     public String doDefault() throws Exception {
         return SUCCESS;
+    }
+
+    private boolean isUserAllowed() {
+        return globalPermissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, getLoggedInApplicationUser());
     }
 
     private void checkRequireFields(String name, String code, List<BindingDto> bindings) {
@@ -70,8 +71,29 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             throw new RestFieldException(i18nHelper.getText("issue.field.required", i18nHelper.getText("ru.mail.jira.plugins.jsincluder.configuration.script.binding")), "binding");
     }
 
+    private List<BindingDto> buildBindingDtos(int scriptId) {
+        Script script = scriptManager.getScript(scriptId);
+        List<BindingDto> bindingDtos = new ArrayList<BindingDto>(script.getBindings().length);
+        for (Binding binding : script.getBindings()) {
+            BindingDto bindingDto = new BindingDto(binding);
+            Project project = projectManager.getProjectObj(binding.getProjectId());
+            if (project != null)
+                bindingDto.setProject(new ProjectDto(project.getId(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
+            List<IssueTypeDto> issueTypes = new ArrayList<IssueTypeDto>();
+            for (String issueTypeId : CommonUtils.split(binding.getIssueTypeIds())) {
+                IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
+                if (issueType != null)
+                    issueTypes.add(new IssueTypeDto(issueType.getId(), issueType.getName(), issueType.getIconUrl()));
+            }
+            bindingDto.setIssueTypes(issueTypes);
+            bindingDtos.add(bindingDto);
+        }
+        return bindingDtos;
+    }
+
     @GET
     @Path("/script")
+    @WebSudoNotRequired
     public Response getScripts() {
         return new RestExecutor<List<ScriptDto>>() {
             @Override
@@ -92,6 +114,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @GET
     @Path("/script/{id}")
+    @WebSudoNotRequired
     public Response getScript(@PathParam("id") final int id) {
         return new RestExecutor<ScriptDto>() {
             @Override
@@ -109,6 +132,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @POST
     @Path("/script/")
+    @WebSudoNotRequired
     public Response createScript(final ScriptDto scriptDto) {
         return new RestExecutor<ScriptDto>() {
             @Override
@@ -136,6 +160,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @PUT
     @Path("/script/{id}")
+    @WebSudoNotRequired
     public Response updateScript(final ScriptDto scriptDto) {
         return new RestExecutor<ScriptDto>() {
             @Override
@@ -180,6 +205,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @DELETE
     @Path("/script/{id}")
+    @WebSudoNotRequired
     public Response deleteScript(@PathParam("id") final int id) {
         return new RestExecutor<Void>() {
             @Override
@@ -195,6 +221,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @GET
     @Path("/script/{scriptId}/binding")
+    @WebSudoNotRequired
     public Response getBindings(@PathParam("scriptId") final String scriptId) {
         return new RestExecutor<List<BindingDto>>() {
             @Override
@@ -209,6 +236,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @GET
     @Path("/project")
+    @WebSudoNotRequired
     public Response getProjects(@QueryParam("filter") final String filter) {
         return new RestExecutor<List<ProjectDto>>() {
             @Override
@@ -236,6 +264,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     @GET
     @Path("/issuetype")
+    @WebSudoNotRequired
     public Response getIssueTypes(@QueryParam("projectId") final String projectId,
                                   @QueryParam("filter") final String filter) {
         return new RestExecutor<List<IssueTypeDto>>() {
@@ -267,25 +296,5 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 return result;
             }
         }.getResponse();
-    }
-
-    private List<BindingDto> buildBindingDtos(int scriptId) {
-        Script script = scriptManager.getScript(scriptId);
-        List<BindingDto> bindingDtos = new ArrayList<BindingDto>(script.getBindings().length);
-        for (Binding binding : script.getBindings()) {
-            BindingDto bindingDto = new BindingDto(binding);
-            Project project = projectManager.getProjectObj(binding.getProjectId());
-            if (project != null)
-                bindingDto.setProject(new ProjectDto(project.getId(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
-            List<IssueTypeDto> issueTypes = new ArrayList<IssueTypeDto>();
-            for (String issueTypeId : CommonUtils.split(binding.getIssueTypeIds())) {
-                IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
-                if (issueType != null)
-                    issueTypes.add(new IssueTypeDto(issueType.getId(), issueType.getName(), issueType.getIconUrl()));
-            }
-            bindingDto.setIssueTypes(issueTypes);
-            bindingDtos.add(bindingDto);
-        }
-        return bindingDtos;
     }
 }
