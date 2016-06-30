@@ -2,7 +2,7 @@
     var RESTRICTION_RULES = [
         {
             fieldNames: ['priority'],
-            projectKeys: ['JC'],
+            projectIds: ['10068'], //JC
             issueTypeIds: ['3'],
             blockedGroups: [],
             blockedProjectRoles: ['Administrators']
@@ -19,7 +19,7 @@
 
     var restrictedFieldNames = [];
     for (var ruleIndex = 0; ruleIndex < RESTRICTION_RULES.length; ruleIndex++) {
-        var projectCondition = !isIntersectionEmpty(RESTRICTION_RULES[ruleIndex].projectKeys, [JS_INCLUDER.params.projectKey]);
+        var projectCondition = !isIntersectionEmpty(RESTRICTION_RULES[ruleIndex].projectIds, [JS_INCLUDER.params.projectId]);
         var issueTypeCondition = !isIntersectionEmpty(RESTRICTION_RULES[ruleIndex].issueTypeIds, [JS_INCLUDER.params.issueTypeId]);
         var groupCondition = !isIntersectionEmpty(RESTRICTION_RULES[ruleIndex].blockedGroups, JS_INCLUDER.params.userDetails.groupNames);
         var projectRoleCondition = !isIntersectionEmpty(RESTRICTION_RULES[ruleIndex].blockedProjectRoles, JS_INCLUDER.params.userDetails.projectRoleNames);

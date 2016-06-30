@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 
 @Path("controller")
-@Produces({ MediaType.APPLICATION_JSON })
+@Produces({MediaType.APPLICATION_JSON})
 public class ControllerResource {
     private final ActiveObjects ao;
     private final JiraAuthenticationContext jiraAuthenticationContext;
@@ -70,9 +70,8 @@ public class ControllerResource {
 
         ScriptsEntity result = new ScriptsEntity();
 
-        result.putParam("projectKey", project.getKey());
+        result.putParam("projectId", project.getId());
         result.putParam("issueTypeId", issueType.getId());
-
         Map<String, Object> userDetails = new HashMap<String, Object>();
         userDetails.put("username", user.getName());
         userDetails.put("email", user.getEmailAddress());
@@ -95,8 +94,8 @@ public class ControllerResource {
             boolean viewScriptAdded = false, editScriptAdded = false, transitionScriptAdded = false;
 
             for (Binding binding : script.getBindings()) {
-                List<String> projectKeys = Arrays.asList(splitCommaString(binding.getProjectKeys()));
-                if (!projectKeys.isEmpty() && !projectKeys.contains(project.getKey()))
+                Long projectId = binding.getProjectId();
+                if (projectId != null && !projectId.equals(project.getId()))
                     continue;
 
                 List<String> issueTypes = Arrays.asList(splitCommaString(binding.getIssueTypeIds()));

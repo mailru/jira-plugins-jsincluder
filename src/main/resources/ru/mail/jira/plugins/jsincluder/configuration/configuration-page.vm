@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>$action.getText( "ru.mail.jira.plugins.jsincluder.configuration.title" )</title>
+        <meta name="decorator" content="admin"/>
+        <meta name="admin.active.section" content="admin_plugins_menu/jsincluder-configuration-section">
+        <meta name="admin.active.tab" content="jsincluder-configuration-link">
+        $webResourceManager.requireResource( "jira.webresources:global-static" )
+        $webResourceManager.requireResource( "jira.webresources:jira-global" )
+        $webResourceManager.requireResource( "ru.mail.jira.plugins.jsincluder:configuration-resource" )
+    </head>
+    <body class="aui">
+        <header class="aui-page-header">
+            <div class="aui-page-header-inner">
+                <div class="aui-page-header-main">
+                    <h2>$action.getText( "ru.mail.jira.plugins.jsincluder.configuration.title" )</h2>
+                </div>
+                <div class="aui-page-header-actions">
+                    <div class="aui-buttons">
+                        <a href="#" id="jsincluder-addScript" class="aui-button">
+                            <span class="icon jira-icon-add"></span>
+                            $i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.addScript" )
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <table class="aui aui-table-rowhover">
+            <thead>
+            <tr>
+                <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.script" )</th>
+                <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings" )</th>
+                <th>$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.operations" )</th>
+            </tr>
+            </thead>
+            <tbody id="jsincluder-scripts">
+            </tbody>
+        </table>
+        #parse( "ru/mail/jira/plugins/jsincluder/configuration/configuration-dialog.vm" )
+        #parse( "ru/mail/jira/plugins/jsincluder/configuration/confirm-dialog.vm" )
+    </body>
+</html>

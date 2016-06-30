@@ -1,0 +1,18 @@
+<section role="dialog" id="jsincluder-confirm-dialog" class="aui-layer aui-dialog2 aui-dialog2-small aui-dialog2-warning" aria-hidden="true"
+         data-aui-focus-selector="#jsincluder-confirm-dialog-ok">
+    <header class="aui-dialog2-header">
+        <h2 class="aui-dialog2-header-main"></h2>
+        <a class="aui-dialog2-header-close">
+            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">$i18n.getText( "admin.common.words.cancel" )</span>
+        </a>
+    </header>
+    <div class="aui-dialog2-content">
+
+    </div>
+    <footer class="aui-dialog2-footer" style="width: 100%">
+        <div class="aui-dialog2-footer-actions">
+            <button id="jsincluder-confirm-dialog-ok" class="aui-button">$i18n.getText( "admin.common.words.confirm" )</button>
+            <button id="jsincluder-confirm-dialog-cancel" class="aui-button aui-button-link">$i18n.getText( "admin.common.words.cancel" )</button>
+        </div>
+    </footer>
+</section>
