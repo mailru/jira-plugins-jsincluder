@@ -112,7 +112,7 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                 $('#jsincluder-scripts').append(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));
             },
             _changeScript: function(script) {
-                $('#jsincluder-scripts tr#' + script.id).replaceWith(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));
+                $('#jsincluder-scripts tr[id="' + script.id + '"]').replaceWith(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));
             },
             _removeScript: function(script) {
                 $('#jsincluder-scripts tr[id="' + script.id + '"]').remove();
