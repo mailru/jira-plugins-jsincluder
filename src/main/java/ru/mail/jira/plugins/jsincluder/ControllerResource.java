@@ -71,6 +71,7 @@ public class ControllerResource {
         ScriptsEntity result = new ScriptsEntity();
 
         result.putParam("projectId", project.getId());
+        result.putParam("projectKey", project.getKey());
         result.putParam("issueTypeId", issueType.getId());
         Map<String, Object> userDetails = new HashMap<String, Object>();
         userDetails.put("username", user.getName());
