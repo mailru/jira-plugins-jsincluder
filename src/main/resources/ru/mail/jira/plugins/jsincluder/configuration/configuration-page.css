@@ -45,6 +45,7 @@ ul.jsincluder-bindings > li:not(:first-child) {
 #jsincluder-configuration-dialog .aui-dialog2-content {
     display: table;
     padding: 0;
+    width: 100%;
 }
 
 #jsincluder-configuration-dialog .aui-navgroup {

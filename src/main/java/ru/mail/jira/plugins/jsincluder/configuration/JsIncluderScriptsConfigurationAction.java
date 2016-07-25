@@ -78,7 +78,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             BindingDto bindingDto = new BindingDto(binding);
             Project project = projectManager.getProjectObj(binding.getProjectId());
             if (project != null)
-                bindingDto.setProject(new ProjectDto(project.getId(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
+                bindingDto.setProject(new ProjectDto(project.getId(), project.getKey(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
             List<IssueTypeDto> issueTypes = new ArrayList<IssueTypeDto>();
             for (String issueTypeId : CommonUtils.split(binding.getIssueTypeIds())) {
                 IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
@@ -248,7 +248,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 List<Project> allProjects = isUserAllowed() ? projectManager.getProjectObjects() : projectService.getAllProjects(user).get();
                 if (StringUtils.isEmpty(formattedFilter))
                     for (Project project : allProjects) {
-                        result.add(new ProjectDto(project.getId(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
+                        result.add(new ProjectDto(project.getId(), project.getKey(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
                         if (result.size() >= 10)
                             break;
                     }
@@ -256,7 +256,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                     for (Project project : allProjects)
                         if (StringUtils.containsIgnoreCase(project.getName(), formattedFilter) || StringUtils.containsIgnoreCase(project.getKey(), formattedFilter))
                             if (result.size() < 10)
-                                result.add(new ProjectDto(project.getId(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
+                                result.add(new ProjectDto(project.getId(), project.getKey(), project.getName(), String.format("projectavatar?pid=%d&avatarId=%d&size=xxmall", project.getId(), project.getAvatar().getId())));
                 return result;
             }
         }.getResponse();

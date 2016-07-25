@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>jsincluder</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <organization>
         <name>Andrey Molchanov | Mail.Ru Group</name>
         <url>http://corp.mail.ru/en</url>

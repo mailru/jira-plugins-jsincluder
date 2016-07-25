@@ -323,7 +323,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this._initIssueTypesField($addedRow);
             var project = binding.get('project');
             if (project)
-                $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: project.id, name: project.name, avatarUrl: project.avatarUrl});
+                $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: project.id, key: project.key, name: project.name, avatarUrl: project.avatarUrl});
             else
                 $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , allProjects);
             var issueTypes = [];

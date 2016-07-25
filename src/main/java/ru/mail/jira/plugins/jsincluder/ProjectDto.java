@@ -9,6 +9,8 @@ public class ProjectDto {
     @XmlElement
     private Long id;
     @XmlElement
+    private String key;
+    @XmlElement
     private String name;
     @XmlElement
     private String avatarUrl;
@@ -17,8 +19,9 @@ public class ProjectDto {
 
     }
 
-    public ProjectDto(Long id, String name, String avatarUrl) {
+    public ProjectDto(Long id, String key, String name, String avatarUrl) {
         this.id = id;
+        this.key = key;
         this.name = name;
         this.avatarUrl = avatarUrl;
     }
@@ -29,6 +32,14 @@ public class ProjectDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
