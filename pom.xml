@@ -66,7 +66,7 @@
         </plugins>
     </build>
     <properties>
-        <jira.version>6.4.11</jira.version>
+        <jira.version>7.1.9</jira.version>
         <ao.version>0.19.7</ao.version>
         <amps.version>5.0.13</amps.version>
         <useFastdevCli>false</useFastdevCli>
