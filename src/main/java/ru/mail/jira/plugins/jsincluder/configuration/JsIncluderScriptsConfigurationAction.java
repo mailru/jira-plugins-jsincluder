@@ -2,6 +2,8 @@ package ru.mail.jira.plugins.jsincluder.configuration;
 
 import com.atlassian.jira.bc.project.ProjectService;
 import com.atlassian.jira.config.IssueTypeManager;
+import com.atlassian.jira.config.properties.APKeys;
+import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.project.Project;
@@ -44,13 +46,16 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
     private final ProjectService projectService;
     private final ScriptManager scriptManager;
 
-    public JsIncluderScriptsConfigurationAction(GlobalPermissionManager globalPermissionManager, I18nHelper i18nHelper, IssueTypeManager issueTypeManager, ProjectManager projectManager, ProjectService projectService, ScriptManager scriptManager) {
+    private String baseUrl;
+
+    public JsIncluderScriptsConfigurationAction(ApplicationProperties applicationProperties, GlobalPermissionManager globalPermissionManager, I18nHelper i18nHelper, IssueTypeManager issueTypeManager, ProjectManager projectManager, ProjectService projectService, ScriptManager scriptManager) {
         this.globalPermissionManager = globalPermissionManager;
         this.i18nHelper = i18nHelper;
         this.issueTypeManager = issueTypeManager;
         this.projectManager = projectManager;
         this.projectService = projectService;
         this.scriptManager = scriptManager;
+        this.baseUrl = applicationProperties.getString(APKeys.JIRA_BASEURL);
     }
 
     @Override
@@ -83,7 +88,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             for (String issueTypeId : CommonUtils.split(binding.getIssueTypeIds())) {
                 IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
                 if (issueType != null)
-                    issueTypes.add(new IssueTypeDto(issueType.getId(), issueType.getName(), issueType.getIconUrl()));
+                    issueTypes.add(new IssueTypeDto(issueType.getId(), issueType.getName(), baseUrl + issueType.getIconUrl()));
             }
             bindingDto.setIssueTypes(issueTypes);
             bindingDtos.add(bindingDto);
@@ -284,7 +289,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 String formattedFilter = filter.trim().toLowerCase();
                 if (StringUtils.isEmpty(formattedFilter))
                     for (IssueType issueType : allIssueType) {
-                        result.add(new IssueTypeDto(issueType.getId(), issueType.getName(), issueType.getIconUrl()));
+                        result.add(new IssueTypeDto(issueType.getId(), issueType.getName(), baseUrl + issueType.getIconUrl()));
                         if (result.size() >= 10)
                             break;
                     }
@@ -292,7 +297,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                     for (IssueType issueType : allIssueType)
                         if (StringUtils.containsIgnoreCase(issueType.getName(), formattedFilter))
                             if (result.size() < 10)
-                                result.add(new IssueTypeDto(issueType.getId(), issueType.getName(), issueType.getIconUrl()));
+                                result.add(new IssueTypeDto(issueType.getId(), issueType.getName(), baseUrl + issueType.getIconUrl()));
                 return result;
             }
         }.getResponse();
