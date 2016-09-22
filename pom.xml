@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>jsincluder</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
+
     <organization>
         <name>Andrey Molchanov | Mail.Ru Group</name>
         <url>http://corp.mail.ru/en</url>
     </organization>
+
     <name>JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
+
     <dependencies>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
@@ -44,6 +49,7 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -65,10 +71,12 @@
             </plugin>
         </plugins>
     </build>
+
     <properties>
         <jira.version>7.1.9</jira.version>
         <ao.version>0.19.7</ao.version>
         <amps.version>5.0.13</amps.version>
         <useFastdevCli>false</useFastdevCli>
     </properties>
+
 </project>

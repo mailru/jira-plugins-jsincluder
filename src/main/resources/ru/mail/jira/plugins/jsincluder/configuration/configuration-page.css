@@ -39,7 +39,8 @@ ul.jsincluder-bindings > li:not(:first-child) {
 #jsincluder-configuration-dialog form {
     margin: 0;
     padding: 10px 20px 0 20px;
-    max-height: 348px;
+    height: 360px;
+    overflow-y: auto;
 }
 
 #jsincluder-configuration-dialog .aui-dialog2-content {
@@ -61,7 +62,7 @@ ul.jsincluder-bindings > li:not(:first-child) {
 #jsincluder-configuration-dialog-bindings-tab {
     display: table-cell;
     width: 850px;
-    overflow-y: scroll;
+    /*overflow-y: auto;*/
 }
 
 .jsincluder-configuration-dialog-error-field {
