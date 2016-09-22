@@ -62,7 +62,6 @@ ul.jsincluder-bindings > li:not(:first-child) {
 #jsincluder-configuration-dialog-bindings-tab {
     display: table-cell;
     width: 850px;
-    /*overflow-y: auto;*/
 }
 
 .jsincluder-configuration-dialog-error-field {
