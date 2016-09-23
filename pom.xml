@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>jsincluder</artifactId>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
 
     <organization>
         <name>Andrey Molchanov | Mail.Ru Group</name>
@@ -73,7 +73,7 @@
     </build>
 
     <properties>
-        <jira.version>7.1.9</jira.version>
+        <jira.version>7.2.1</jira.version>
         <ao.version>0.19.7</ao.version>
         <amps.version>5.0.13</amps.version>
         <useFastdevCli>false</useFastdevCli>
