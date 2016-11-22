@@ -74,7 +74,7 @@ var JS_INCLUDER = {
 
         JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, $context, reason) {
             if (reason == JIRA.CONTENT_ADDED_REASON.dialogReady) {
-                if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length)
+                if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length || $context.parent('#prefillable-create-issue-dialog').length)
                     JS_INCLUDER.executeCreateScripts($context.find('#project').val(), $context.find('#issuetype').val(), $context);
 
                 if ($context.children('#issue-workflow-transition').length)
