@@ -12,6 +12,7 @@ import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import org.apache.commons.lang.StringUtils;
 
@@ -73,15 +74,17 @@ public class ControllerResource {
         result.putParam("projectId", project.getId());
         result.putParam("projectKey", project.getKey());
         result.putParam("issueTypeId", issueType.getId());
-        Map<String, Object> userDetails = new HashMap<String, Object>();
-        userDetails.put("username", user.getName());
-        userDetails.put("email", user.getEmailAddress());
-        userDetails.put("groupNames", groupManager.getGroupNamesForUser(user));
-        List<String> projectRoleNames = new ArrayList<String>();
-        for (ProjectRole projectRole : projectRoleManager.getProjectRoles(user, project))
-            projectRoleNames.add(projectRole.getName());
-        userDetails.put("projectRoleNames", projectRoleNames);
-        result.putParam("userDetails", userDetails);
+        if (user != null) {
+            Map<String, Object> userDetails = new HashMap<String, Object>();
+            userDetails.put("username", user.getName());
+            userDetails.put("email", user.getEmailAddress());
+            userDetails.put("groupNames", groupManager.getGroupNamesForUser(user));
+            List<String> projectRoleNames = new ArrayList<String>();
+            for (ProjectRole projectRole : projectRoleManager.getProjectRoles(user, project))
+                projectRoleNames.add(projectRole.getName());
+            userDetails.put("projectRoleNames", projectRoleNames);
+            result.putParam("userDetails", userDetails);
+        }
 
         Script[] allScripts = ao.executeInTransaction(new TransactionCallback<Script[]>() {
             @Override
@@ -153,6 +156,7 @@ public class ControllerResource {
     }
 
     @GET
+    @AnonymousAllowed
     @Path("/getCreateScripts")
     public Response getCreateScripts(@QueryParam("projectId") final long projectId,
                                      @QueryParam("issueTypeId") final String issueTypeId) {
@@ -164,6 +168,7 @@ public class ControllerResource {
     }
 
     @GET
+    @AnonymousAllowed
     @Path("/getIssueScripts")
     public Response getIssueScripts(@QueryParam("issueId") final long issueId,
                                     @QueryParam("context") final String contextValue) {
