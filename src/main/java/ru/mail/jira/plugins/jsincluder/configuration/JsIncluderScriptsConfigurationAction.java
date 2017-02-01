@@ -240,6 +240,18 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
     }
 
     @GET
+    @Path("/script/{scriptId}/code")
+    @WebSudoNotRequired
+    public Response getCode(@PathParam("scriptId") final String scriptId) {
+        return new RestExecutor<String>() {
+            @Override
+            protected String doAction() throws Exception {
+                return scriptManager.getScript(Integer.parseInt(scriptId)).getCode();
+            }
+        }.getResponse();
+    }
+
+    @GET
     @Path("/project")
     @WebSudoNotRequired
     public Response getProjects(@QueryParam("filter") final String filter) {
