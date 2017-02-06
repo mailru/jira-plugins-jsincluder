@@ -13,6 +13,13 @@
                 if ($context.parent('#edit-issue-dialog').length)
                     JS_INCLUDER.executeIssueScripts($context.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_EDIT, $context);
             }
+
+            //GH details view
+            if (reason == JIRA.CONTENT_ADDED_REASON.panelRefreshed && ($context.is('#attachmentmodule') || $context.is('#file_attachments') || $context.is("#attachment_thumbnails"))) {
+                var ghIssueId = GH.DetailsView._getIssueElement().data('issueid');
+                if (ghIssueId)
+                    JS_INCLUDER.executeIssueScripts(ghIssueId, JS_INCLUDER.CONTEXT_VIEW, $(document));
+            }
         });
     });
 })(AJS.$);
