@@ -16,7 +16,7 @@
 
             //GH details view
             if (reason == JIRA.CONTENT_ADDED_REASON.panelRefreshed && ($context.is('#attachmentmodule') || $context.is('#file_attachments') || $context.is("#attachment_thumbnails"))) {
-                var ghIssueId = GH.DetailsView._getIssueElement().data('issueid');
+                var ghIssueId = $('#ghx-detail-issue').data('issueid');
                 if (ghIssueId)
                     JS_INCLUDER.executeIssueScripts(ghIssueId, JS_INCLUDER.CONTEXT_VIEW, $(document));
             }
