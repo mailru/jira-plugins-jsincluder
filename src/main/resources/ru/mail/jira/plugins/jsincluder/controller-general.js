@@ -14,8 +14,9 @@ var JS_INCLUDER = {
         JS_INCLUDER.$contextObject = $contextObject;
         for (var i = 0; i < scripts.length; i++)
             try {
-                eval(scripts[i]);
+                eval(scripts[i].code);
             } catch (e) {
+                console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
                 alert(e.message);
             }
     },

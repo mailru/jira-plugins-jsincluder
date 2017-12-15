@@ -109,21 +109,21 @@ public class ControllerResource {
                 switch (context) {
                     case CREATE:
                         if (binding.isCreateContextEnabled()) {
-                            result.addCreateScript(script.getCode());
+                            result.addCreateScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
                     case VIEW:
                         if (!viewScriptAdded && binding.isViewContextEnabled()) {
-                            result.addViewScript(script.getCode());
+                            result.addViewScript(new ScriptDto(script));
                             viewScriptAdded = true;
                         }
                         if (!editScriptAdded && binding.isEditContextEnabled()) {
-                            result.addEditScript(script.getCode());
+                            result.addEditScript(new ScriptDto(script));
                             editScriptAdded = true;
                         }
                         if (!transitionScriptAdded && binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(script.getCode());
+                            result.addTransitionScript(new ScriptDto(script));
                             transitionScriptAdded = true;
                         }
                         if (viewScriptAdded && editScriptAdded && transitionScriptAdded)
@@ -131,13 +131,13 @@ public class ControllerResource {
                         break;
                     case EDIT:
                         if (binding.isEditContextEnabled()) {
-                            result.addEditScript(script.getCode());
+                            result.addEditScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
                     case TRANSITION:
                         if (binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(script.getCode());
+                            result.addTransitionScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
