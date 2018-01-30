@@ -59,28 +59,30 @@ var JS_INCLUDER = {
     }
 };
 
-(function ($) {
-    AJS.toInit(function () {
-        var createSubTaskPageForm = $('#subtask-create-details');
-        if (createSubTaskPageForm.length)
-            JS_INCLUDER.executeCreateScripts(createSubTaskPageForm.find('input[name="pid"]').val(), createSubTaskPageForm.find('input[name="issuetype"]').val(), $(document));
+require(['jira/util/events', 'jira/util/events/types', 'jira/util/events/reasons'], function(Events, Types, Reasons) {
+    (function ($) {
+        AJS.toInit(function () {
+            var createSubTaskPageForm = $('#subtask-create-details');
+            if (createSubTaskPageForm.length)
+                JS_INCLUDER.executeCreateScripts(createSubTaskPageForm.find('input[name="pid"]').val(), createSubTaskPageForm.find('input[name="issuetype"]').val(), $(document));
 
-        var editPageForm = $('#issue-edit');
-        if (editPageForm.length)
-            JS_INCLUDER.executeIssueScripts(editPageForm.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_EDIT, $(document));
+            var editPageForm = $('#issue-edit');
+            if (editPageForm.length)
+                JS_INCLUDER.executeIssueScripts(editPageForm.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_EDIT, $(document));
 
-        var transitionPageForm = $('#issue-workflow-transition');
-        if (transitionPageForm.length)
-            JS_INCLUDER.executeIssueScripts(transitionPageForm.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_TRANSITION, $(document));
+            var transitionPageForm = $('#issue-workflow-transition');
+            if (transitionPageForm.length)
+                JS_INCLUDER.executeIssueScripts(transitionPageForm.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_TRANSITION, $(document));
 
-        JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, $context, reason) {
-            if (reason == JIRA.CONTENT_ADDED_REASON.dialogReady) {
-                if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length || $context.parent('#prefillable-create-issue-dialog').length)
-                    JS_INCLUDER.executeCreateScripts($context.find('#project').val(), $context.find('#issuetype').val(), $context);
+            Events.bind(Types.NEW_CONTENT_ADDED, function (e, $context, reason) {
+                if (reason == Reasons.dialogReady) {
+                    if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length || $context.parent('#prefillable-create-issue-dialog').length)
+                        JS_INCLUDER.executeCreateScripts($context.find('#project').val(), $context.find('#issuetype').val(), $context);
 
-                if ($context.children('#issue-workflow-transition').length)
-                    JS_INCLUDER.executeIssueScripts($context.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_TRANSITION, $context);
-            }
+                    if ($context.children('#issue-workflow-transition').length)
+                        JS_INCLUDER.executeIssueScripts($context.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_TRANSITION, $context);
+                }
+            });
         });
-    });
-})(AJS.$);
+    })(AJS.$);
+});

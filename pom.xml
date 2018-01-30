@@ -79,7 +79,7 @@
     </build>
 
     <properties>
-        <jira.version>7.2.1</jira.version>
+        <jira.version>7.3.4</jira.version>
         <ao.version>0.19.7</ao.version>
         <amps.version>5.0.13</amps.version>
         <useFastdevCli>false</useFastdevCli>
