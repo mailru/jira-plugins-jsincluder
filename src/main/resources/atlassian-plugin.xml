@@ -81,7 +81,6 @@
 
     <web-resource key="controller-general">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>jira.webresources:jira-events</dependency>
         <resource type="download" name="controller-general.js" location="ru/mail/jira/plugins/jsincluder/controller-general.js" />
         <context>jira.general</context>
         <context>servicedesk.portal</context>
@@ -103,8 +102,8 @@
 
     <web-resource key="controller-view-servicedesk">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>jira.webresources:jira-events</dependency>
-        <resource type="download" name="controller-view.js" location="ru/mail/jira/plugins/jsincluder/controller-view-servicedesk.js" />
+        <dependency>jira.webresources:util</dependency>
+        <resource type="download" name="controller-view-servicedesk.js" location="ru/mail/jira/plugins/jsincluder/controller-view-servicedesk.js" />
         <context>servicedesk.portal</context>
         <context>customerportal</context>
     </web-resource>
