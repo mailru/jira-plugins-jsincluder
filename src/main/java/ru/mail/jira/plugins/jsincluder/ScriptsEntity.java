@@ -11,30 +11,30 @@ import java.util.Map;
 @XmlRootElement
 public class ScriptsEntity {
     @XmlElement
-    private List<String> create = new ArrayList<String>();
+    private List<ScriptDto> create = new ArrayList<ScriptDto>();
     @XmlElement
-    private List<String> view = new ArrayList<String>();
+    private List<ScriptDto> view = new ArrayList<ScriptDto>();
     @XmlElement
-    private List<String> edit = new ArrayList<String>();
+    private List<ScriptDto> edit = new ArrayList<ScriptDto>();
     @XmlElement
-    private List<String> transition = new ArrayList<String>();
+    private List<ScriptDto> transition = new ArrayList<ScriptDto>();
     @XmlElement
     private Map<String, Object> params = new HashMap<String, Object>();
 
-    public void addCreateScript(String code) {
-        create.add(code);
+    public void addCreateScript(ScriptDto script) {
+        create.add(script);
     }
 
-    public void addViewScript(String code) {
-        view.add(code);
+    public void addViewScript(ScriptDto script) {
+        view.add(script);
     }
 
-    public void addEditScript(String code) {
-        edit.add(code);
+    public void addEditScript(ScriptDto script) {
+        edit.add(script);
     }
 
-    public void addTransitionScript(String code) {
-        transition.add(code);
+    public void addTransitionScript(ScriptDto script) {
+        transition.add(script);
     }
 
     public void putParam(String key, Object value) {

@@ -1,4 +1,4 @@
-<section role="dialog" id="jsincluder-configuration-dialog" class="aui-layer aui-dialog2 aui-dialog2-xlarge" aria-hidden="true">
+<section role="dialog" id="jsincluder-configuration-dialog" class="aui-layer aui-dialog2" aria-hidden="true">
     <header class="aui-dialog2-header">
         <h2 id="jsincluder-configuration-dialog-header" class="aui-dialog2-header-main"></h2>
     </header>
