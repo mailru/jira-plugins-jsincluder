@@ -83,6 +83,8 @@
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <resource type="download" name="controller-general.js" location="ru/mail/jira/plugins/jsincluder/controller-general.js" />
         <context>jira.general</context>
+        <context>servicedesk.portal</context>
+        <context>customerportal</context>
     </web-resource>
 
     <web-resource key ="controller-create">
@@ -96,6 +98,14 @@
         <resource type="download" name="controller-view.js" location="ru/mail/jira/plugins/jsincluder/controller-view.js" />
         <context>jira.view.issue</context>
         <context>greenhopper-rapid-non-gadget</context>
+    </web-resource>
+
+    <web-resource key="controller-view-servicedesk">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>jira.webresources:util</dependency>
+        <resource type="download" name="controller-view-servicedesk.js" location="ru/mail/jira/plugins/jsincluder/controller-view-servicedesk.js" />
+        <context>servicedesk.portal</context>
+        <context>customerportal</context>
     </web-resource>
 
 </atlassian-plugin>

@@ -81,7 +81,7 @@
     <properties>
         <jira.version>7.6.3</jira.version>
         <ao.version>0.19.7</ao.version>
-        <amps.version>5.0.13</amps.version>
+        <amps.version>6.3.14</amps.version>
         <useFastdevCli>false</useFastdevCli>
     </properties>
 
