@@ -83,6 +83,7 @@
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <resource type="download" name="controller-general.js" location="ru/mail/jira/plugins/jsincluder/controller-general.js" />
         <context>jira.general</context>
+        <context>atl.admin</context>
         <context>servicedesk.portal</context>
         <context>customerportal</context>
     </web-resource>
