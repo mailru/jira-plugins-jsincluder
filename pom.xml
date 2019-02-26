@@ -60,7 +60,7 @@
         <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
+                <artifactId>jira-maven-plugin</artifactId>
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -81,8 +81,21 @@
     <properties>
         <jira.version>7.6.3</jira.version>
         <ao.version>0.19.7</ao.version>
-        <amps.version>6.3.14</amps.version>
+        <amps.version>8.0.0</amps.version>
         <useFastdevCli>false</useFastdevCli>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>atlassian</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>atlassian</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
