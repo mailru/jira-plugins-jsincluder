@@ -1,4 +1,4 @@
-(function ($) {
+require(['jquery'], function($) {
     AJS.toInit(function () {
         var jsdAttempt=0;
 
@@ -21,4 +21,4 @@
         if (jsonPayload != null && jsonPayload.hasOwnProperty('reqDetails') && jsonPayload.reqDetails.hasOwnProperty('issue'))
             onFunctionAvailable(jsonPayload.reqDetails.issue); //todo: найти лучшее решение
     });
-})(AJS.$);
+});

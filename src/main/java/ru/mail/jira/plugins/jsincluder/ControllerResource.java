@@ -67,7 +67,7 @@ public class ControllerResource {
     }
 
     public ScriptsEntity getScriptsEntity(Project project, IssueType issueType, Context context) {
-        ApplicationUser user = jiraAuthenticationContext.getUser();
+        ApplicationUser user = jiraAuthenticationContext.getLoggedInUser();
 
         ScriptsEntity result = new ScriptsEntity();
 
@@ -149,9 +149,9 @@ public class ControllerResource {
     }
 
     public ScriptsEntity getScriptsEntity(Issue issue, Context context) {
-        ScriptsEntity result = getScriptsEntity(issue.getProjectObject(), issue.getIssueTypeObject(), context);
+        ScriptsEntity result = getScriptsEntity(issue.getProjectObject(), issue.getIssueType(), context);
         result.putParam("parentId", issue.getParentId());
-        result.putParam("issueStatusId", issue.getStatusObject().getId());
+        result.putParam("issueStatusId", issue.getStatusId());
         return result;
     }
 
