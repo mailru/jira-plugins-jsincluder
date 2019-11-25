@@ -16,7 +16,7 @@ var JS_INCLUDER = {
             try {
                 eval(scripts[i].code);
             } catch (e) {
-                console.error(formatter.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
+                console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
                 alert(e.message);
             }
     },
