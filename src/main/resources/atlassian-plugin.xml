@@ -52,6 +52,7 @@
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <dependency>com.atlassian.auiplugin:dialog2</dependency>
+        <dependency>com.atlassian.auiplugin:aui-dialog2</dependency>
         <dependency>com.atlassian.auiplugin:aui-select2</dependency>
         <dependency>ru.mail.jira.plugins.jsincluder:jsincluder-soy-templates</dependency>
 

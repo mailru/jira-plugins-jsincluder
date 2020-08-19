@@ -64,7 +64,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
     }
 
     private boolean isUserAllowed() {
-        return globalPermissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, getLoggedInApplicationUser());
+        return globalPermissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, getLoggedInUser());
     }
 
     private void checkRequireFields(String name, String code, List<BindingDto> bindings) {
@@ -259,7 +259,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             @Override
             protected List<ProjectDto> doAction() throws Exception {
                 List<ProjectDto> result = new ArrayList<ProjectDto>();
-                ApplicationUser user = getLoggedInApplicationUser();
+                ApplicationUser user = getLoggedInUser();
 
                 String formattedFilter = filter.trim().toLowerCase();
                 List<Project> allProjects = isUserAllowed() ? projectManager.getProjectObjects() : projectService.getAllProjects(user).get();
