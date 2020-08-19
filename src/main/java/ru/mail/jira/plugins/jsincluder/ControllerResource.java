@@ -12,6 +12,7 @@ import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import org.apache.commons.lang.StringUtils;
 
@@ -73,15 +74,17 @@ public class ControllerResource {
         result.putParam("projectId", project.getId());
         result.putParam("projectKey", project.getKey());
         result.putParam("issueTypeId", issueType.getId());
-        Map<String, Object> userDetails = new HashMap<String, Object>();
-        userDetails.put("username", user.getName());
-        userDetails.put("email", user.getEmailAddress());
-        userDetails.put("groupNames", groupManager.getGroupNamesForUser(user));
-        List<String> projectRoleNames = new ArrayList<String>();
-        for (ProjectRole projectRole : projectRoleManager.getProjectRoles(user, project))
-            projectRoleNames.add(projectRole.getName());
-        userDetails.put("projectRoleNames", projectRoleNames);
-        result.putParam("userDetails", userDetails);
+        if (user != null) {
+            Map<String, Object> userDetails = new HashMap<String, Object>();
+            userDetails.put("username", user.getName());
+            userDetails.put("email", user.getEmailAddress());
+            userDetails.put("groupNames", groupManager.getGroupNamesForUser(user));
+            List<String> projectRoleNames = new ArrayList<String>();
+            for (ProjectRole projectRole : projectRoleManager.getProjectRoles(user, project))
+                projectRoleNames.add(projectRole.getName());
+            userDetails.put("projectRoleNames", projectRoleNames);
+            result.putParam("userDetails", userDetails);
+        }
 
         Script[] allScripts = ao.executeInTransaction(new TransactionCallback<Script[]>() {
             @Override
@@ -106,21 +109,21 @@ public class ControllerResource {
                 switch (context) {
                     case CREATE:
                         if (binding.isCreateContextEnabled()) {
-                            result.addCreateScript(script.getCode());
+                            result.addCreateScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
                     case VIEW:
                         if (!viewScriptAdded && binding.isViewContextEnabled()) {
-                            result.addViewScript(script.getCode());
+                            result.addViewScript(new ScriptDto(script));
                             viewScriptAdded = true;
                         }
                         if (!editScriptAdded && binding.isEditContextEnabled()) {
-                            result.addEditScript(script.getCode());
+                            result.addEditScript(new ScriptDto(script));
                             editScriptAdded = true;
                         }
                         if (!transitionScriptAdded && binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(script.getCode());
+                            result.addTransitionScript(new ScriptDto(script));
                             transitionScriptAdded = true;
                         }
                         if (viewScriptAdded && editScriptAdded && transitionScriptAdded)
@@ -128,13 +131,13 @@ public class ControllerResource {
                         break;
                     case EDIT:
                         if (binding.isEditContextEnabled()) {
-                            result.addEditScript(script.getCode());
+                            result.addEditScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
                     case TRANSITION:
                         if (binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(script.getCode());
+                            result.addTransitionScript(new ScriptDto(script));
                             continue outer;
                         }
                         break;
@@ -153,6 +156,7 @@ public class ControllerResource {
     }
 
     @GET
+    @AnonymousAllowed
     @Path("/getCreateScripts")
     public Response getCreateScripts(@QueryParam("projectId") final long projectId,
                                      @QueryParam("issueTypeId") final String issueTypeId) {
@@ -164,6 +168,7 @@ public class ControllerResource {
     }
 
     @GET
+    @AnonymousAllowed
     @Path("/getIssueScripts")
     public Response getIssueScripts(@QueryParam("issueId") final long issueId,
                                     @QueryParam("context") final String contextValue) {
