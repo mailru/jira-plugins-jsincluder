@@ -3,16 +3,18 @@
         <h2 id="jsincluder-configuration-dialog-header" class="aui-dialog2-header-main"></h2>
     </header>
     <div class="aui-dialog2-content">
-        <nav class="aui-navgroup aui-navgroup-vertical">
+        <nav class="aui-navgroup aui-navgroup-horizontal">
             <div class="aui-navgroup-inner">
-                <ul class="aui-nav">
-                    <li class="aui-nav-selected">
-                        <a href="#jsincluder-configuration-dialog-general-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.general" )</a>
-                    </li>
-                    <li>
-                        <a href="#jsincluder-configuration-dialog-bindings-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings" )</a>
-                    </li>
-                </ul>
+                <div class="aui-navgroup-primary">
+                    <ul class="aui-nav">
+                        <li class="aui-nav-selected">
+                            <a href="#jsincluder-configuration-dialog-general-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.general" )</a>
+                        </li>
+                        <li>
+                            <a href="#jsincluder-configuration-dialog-bindings-tab">$i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings" )</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
         <div id="jsincluder-configuration-dialog-general-tab">
