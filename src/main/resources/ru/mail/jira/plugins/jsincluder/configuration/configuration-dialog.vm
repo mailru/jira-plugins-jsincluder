@@ -34,7 +34,30 @@
                         <span class="aui-icon icon-required"></span>
                         $i18n.getText( "ru.mail.jira.plugins.jsincluder.configuration.script.code" )
                     </label>
-                    <textarea class="textarea full-width-field" type="text" id="jsincluder-configuration-dialog-code" cols="40" rows="5" value=""></textarea>
+                    <div class="jsincluder-configuration-dialog-code">
+                        <div class="jsincluder-configuration-dialog-code-item">
+                            <div class="jsincluder-configuration-dialog-code-item-name expanded">
+                                <span class="aui-icon aui-icon-small aui-iconfont-chevron-down"></span>
+                                <div class="jsincluder-configuration-dialog-code-item-name-container">
+                                    <h4>JavaScript</h4>
+                                </div>
+                            </div>
+                            <div class="jsincluder-configuration-dialog-code-item-input js-field">
+                                <textarea class="textarea jsincluder-configuration-dialog-code full-width-field" type="text" id="jsincluder-configuration-dialog-code-js" rows="5" value=""></textarea>
+                            </div>
+                        </div>
+                        <div class="jsincluder-configuration-dialog-code-item">
+                            <div class="jsincluder-configuration-dialog-code-item-name">
+                                <span class="aui-icon aui-icon-small aui-iconfont-chevron-right"></span>
+                                <div class="jsincluder-configuration-dialog-code-item-name-container">
+                                    <h4>CSS</h4>
+                                </div>
+                            </div>
+                            <div class="jsincluder-configuration-dialog-code-item-input css-field hidden">
+                                <textarea class="textarea jsincluder-configuration-dialog-code full-width-field" type="text" id="jsincluder-configuration-dialog-code-css" rows="5" value=""></textarea>
+                            </div>
+                        </div>
+                    </div>
                     <div id="jsincluder-configuration-dialog-code-error" class="error hidden"></div>
                 </div>
             </form>

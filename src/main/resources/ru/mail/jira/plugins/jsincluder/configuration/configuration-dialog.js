@@ -1,5 +1,6 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
-    var editor;
+    var editorJS;
+    var editorCSS;
     var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all'), avatarUrl: ''};
     return Backbone.View.extend({
         el: '#jsincluder-configuration-dialog',
@@ -7,6 +8,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             'click #jsincluder-configuration-dialog-ok': '_submit',
             'click #jsincluder-configuration-dialog-cancel': 'hide',
             'click a[href=#jsincluder-configuration-dialog-general-tab]': '_selectGeneralTab',
+            'click .jsincluder-configuration-dialog-code-item-name': '_toggleCodeField',
             'click a[href=#jsincluder-configuration-dialog-bindings-tab]': '_selectBindingsTab',
             'click #jsincluder-add-binding button': '_addNewBinding',
             'click #jsincluder-binding-create': '_createBinding',
@@ -155,7 +157,8 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 this.$okButton.text(AJS.I18n.getText('common.words.update'));
 
                 this.$('#jsincluder-configuration-dialog-name').val(this.model.get('name'));
-                this.$('#jsincluder-configuration-dialog-code').val(this.model.get('code'));
+                this.$('#jsincluder-configuration-dialog-code-js').val(this.model.get('code'));
+                this.$('#jsincluder-configuration-dialog-code-css').val(this.model.get('css'));
                 var htmlBindings = '';
                 this.collection.each(function(binding) {
                     htmlBindings += JIRA.Templates.Plugins.JsIncluder.bindingEntry({
@@ -174,7 +177,8 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     break;
                 }
                 this.$('#jsincluder-configuration-dialog-name').val(AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.script.default', i));
-                this.$('#jsincluder-configuration-dialog-code').val(AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.script.code.default'));
+                this.$('#jsincluder-configuration-dialog-code-js').val(AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.script.code.default'));
+                this.$('#jsincluder-configuration-dialog-code-css').val('');
                 this.$('.aui-dialog2-header-main').text(AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.createScript'));
                 this.$okButton.text(AJS.I18n.getText('common.words.create'));
             }
@@ -191,10 +195,12 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         },
         _serializeScript: function() {
             var name = this.$('#jsincluder-configuration-dialog-name').val();
-            var code = editor.getValue();
+            var code = editorJS !== undefined ? editorJS.getValue(): '';
+            var css = editorCSS !== undefined ? editorCSS.getValue(): '';
             return {
                 name: name,
                 code: code,
+                css: css,
                 bindings: this.collection
             };
         },
@@ -240,9 +246,9 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 this.$('#jsincluder-configuration-dialog-' + field + '-error').removeClass('hidden').text(response.responseText);
                 if (field == 'name')
                     this.$('#jsincluder-configuration-dialog-' + field).focus();
-                else if (field == 'code')
-                    editor.focus();
-                else if (field == 'binding') {
+                else if (field == 'code') {
+                    editorJS.focus();
+                } else if (field == 'binding') {
                     this._selectBindingsTab();
                     this.$('#jsincluder-configuration-dialog-bindings-tab .jsincluder-configuration-dialog-error-panel').removeClass('hidden').text(response.responseText);
                 }
@@ -259,16 +265,42 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this.$('a[href=#jsincluder-configuration-dialog-general-tab]').closest('li').toggleClass('aui-nav-selected', true);
             this.$('#jsincluder-configuration-dialog-name').focus();
 
-            if (!$('div.CodeMirror').length) {
-                editor = CodeMirror.fromTextArea(document.getElementById('jsincluder-configuration-dialog-code'), {
-                    autofocus: true,
-                    lineNumbers: true,
-                    matchBrackets: true,
-                    mode: 'javascript',
-                    indentWithTabs: true,
-                    tabMode: "shift"
-                });
+            this.$('.jsincluder-configuration-dialog-code-item').each((function(index, element) {
+                var $codeFieldInputContainer = $(element).find('.jsincluder-configuration-dialog-code-item-input');
+                this._initCodeFieldInput($codeFieldInputContainer);
+            }).bind(this))
+        },
+        _initCodeMirrorEditor: function(textarea, mode) {
+            return CodeMirror.fromTextArea(textarea, {
+                autofocus: true,
+                lineNumbers: true,
+                mode: mode,
+                matchBrackets: true,
+                indentWithTabs: true,
+                tabMode: "shift"
+            });
+        },
+        _initCodeFieldInput: function($codeFieldInputContainer) {
+            if (!$codeFieldInputContainer.hasClass('hidden') && !$codeFieldInputContainer.find('div.CodeMirror').length) {
+                var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
+                if ($codeFieldInputContainer.hasClass('css-field')) {
+                    editorCSS = this._initCodeMirrorEditor(textarea, 'css');
+                } else {
+                    editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
+                }
             }
+        },
+        _toggleCodeField: function(e) {
+            e && e.preventDefault();
+            var $codeField = $(e.target).parents('div.jsincluder-configuration-dialog-code-item');
+            var $codeFieldNameContainer = $codeField.find('.jsincluder-configuration-dialog-code-item-name');
+            var $codeFieldInputContainer = $codeField.find('.jsincluder-configuration-dialog-code-item-input');
+
+            var isCodeFieldHidden = $codeFieldInputContainer.hasClass('hidden');
+            $codeFieldNameContainer.toggleClass('expanded', isCodeFieldHidden);
+            $codeFieldNameContainer.find('.aui-icon').toggleClass('aui-iconfont-chevron-right', !isCodeFieldHidden).toggleClass('aui-iconfont-chevron-down', isCodeFieldHidden);
+            $codeFieldInputContainer.toggleClass('hidden', !isCodeFieldHidden);
+            this._initCodeFieldInput($codeFieldInputContainer);
         },
         _selectBindingsTab: function(e) {
             e && e.preventDefault();

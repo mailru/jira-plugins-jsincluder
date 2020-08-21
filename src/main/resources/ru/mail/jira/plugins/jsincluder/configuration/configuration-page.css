@@ -52,6 +52,34 @@ ul.jsincluder-bindings > li:not(:first-child) {
     background: #f4f5f7;
 }
 
+.jsincluder-configuration-dialog-code-item {
+    border: 1px solid #ccc;
+    border-radius: 0.4em;
+
+}
+
+.jsincluder-configuration-dialog-code>.jsincluder-configuration-dialog-code-item:not(:first-child) {
+    margin-top: 10px;
+}
+
+.jsincluder-configuration-dialog-code-item-name:hover {
+    cursor: pointer;
+    background: #f0f0f0;
+}
+
+.jsincluder-configuration-dialog-code-item-name {
+    padding: 10px 10px 10px 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.jsincluder-configuration-dialog-code-item-name.expanded {
+    background: #f0f0f0;
+}
+
+.jsincluder-configuration-dialog-code-item-name-container {
+    display: inline-block;
+}
+
 .jsincluder-configuration-dialog-error-field {
     border-color: red !important;
 }

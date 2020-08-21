@@ -1,9 +1,13 @@
 package ru.mail.jira.plugins.jsincluder;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
+@Getter @Setter
 @XmlRootElement
 public class ProjectDto {
     @XmlElement
@@ -16,45 +20,12 @@ public class ProjectDto {
     private String avatarUrl;
 
     public ProjectDto() {
-
     }
 
     public ProjectDto(Long id, String key, String name, String avatarUrl) {
         this.id = id;
         this.key = key;
         this.name = name;
-        this.avatarUrl = avatarUrl;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAvatarUrl() {
-        return this.avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 }
