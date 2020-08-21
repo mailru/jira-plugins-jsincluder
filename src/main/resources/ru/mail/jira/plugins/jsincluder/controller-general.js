@@ -8,10 +8,7 @@ var JS_INCLUDER = {
     params: {},
     $contextObject: null,
 
-    _execute: function(scripts, params, context, $contextObject) {
-        JS_INCLUDER.params = params;
-        JS_INCLUDER.params.context = context;
-        JS_INCLUDER.$contextObject = $contextObject;
+    _executeJs: function(scripts) {
         for (var i = 0; i < scripts.length; i++)
             try {
                 eval(scripts[i].code);
@@ -19,6 +16,25 @@ var JS_INCLUDER = {
                 console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
                 alert(e.message);
             }
+    },
+
+    _executeCss: function(scripts) {
+        AJS.$(AJS.format('style.jsincluder-css-{0}', JS_INCLUDER.params.context)).remove();
+        var css = '';
+        for (var i = 0; i < scripts.length; i++) {
+            css += AJS.format('\n/* Script {0} css rules */\n', scripts[i].name);
+            css += scripts[i].css + '\n';
+        }
+        if (css.length)
+            AJS.$(AJS.format('<style class="jsincluder-css-{0}">', JS_INCLUDER.params.context)).text(css).appendTo('head');
+    },
+
+    _execute: function(scripts, params, context, $contextObject) {
+        JS_INCLUDER.params = params;
+        JS_INCLUDER.params.context = context;
+        JS_INCLUDER.$contextObject = $contextObject;
+        JS_INCLUDER._executeJs(scripts);
+        JS_INCLUDER._executeCss(scripts);
     },
 
     executeCreateScripts: function(projectId, issueTypeId, $contextObject) {
