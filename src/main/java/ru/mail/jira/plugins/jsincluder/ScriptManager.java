@@ -43,26 +43,28 @@ public class ScriptManager {
         });
     }
 
-    public Script createScript(final String name, final String code) {
+    public Script createScript(final String name, final String code, final String css) {
         return ao.executeInTransaction(new TransactionCallback<Script>() {
             @Override
             public Script doInTransaction() {
                 Script script = ao.create(Script.class);
                 script.setName(name);
                 script.setCode(code);
+                script.setCss(css);
                 script.save();
                 return script;
             }
         });
     }
 
-    public Script updateScript(final int id, final String name, final String code) {
+    public Script updateScript(final int id, final String name, final String code, final String css) {
         return ao.executeInTransaction(new TransactionCallback<Script>() {
             @Override
             public Script doInTransaction() {
                 Script script = getScript(id);
                 script.setName(name);
                 script.setCode(code);
+                script.setCss(css);
                 script.save();
                 return script;
             }

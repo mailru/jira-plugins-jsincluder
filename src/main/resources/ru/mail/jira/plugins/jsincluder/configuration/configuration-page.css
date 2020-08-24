@@ -39,29 +39,45 @@ ul.jsincluder-bindings > li:not(:first-child) {
 #jsincluder-configuration-dialog form {
     margin: 0;
     padding: 10px 20px 0 20px;
-    height: 360px;
+    height: 450px;
     overflow-y: auto;
 }
 
 #jsincluder-configuration-dialog .aui-dialog2-content {
-    display: table;
     padding: 0;
     width: 100%;
 }
 
 #jsincluder-configuration-dialog .aui-navgroup {
-    border-right: 1px solid #ccc;
-    box-sizing: border-box;
-    display: table-cell;
-    width: 20%;
-    padding: 10px 10px 20px 10px;
-    vertical-align: top;
+    background: #f4f5f7;
 }
 
-#jsincluder-configuration-dialog-general-tab,
-#jsincluder-configuration-dialog-bindings-tab {
-    display: table-cell;
-    width: 850px;
+.jsincluder-configuration-dialog-code-item {
+    border: 1px solid #ccc;
+    border-radius: 0.4em;
+
+}
+
+.jsincluder-configuration-dialog-code>.jsincluder-configuration-dialog-code-item:not(:first-child) {
+    margin-top: 10px;
+}
+
+.jsincluder-configuration-dialog-code-item-name:hover {
+    cursor: pointer;
+    background: #f0f0f0;
+}
+
+.jsincluder-configuration-dialog-code-item-name {
+    padding: 10px 10px 10px 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.jsincluder-configuration-dialog-code-item-name.expanded {
+    background: #f0f0f0;
+}
+
+.jsincluder-configuration-dialog-code-item-name-container {
+    display: inline-block;
 }
 
 .jsincluder-configuration-dialog-error-field {

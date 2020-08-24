@@ -67,11 +67,11 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
         return globalPermissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, getLoggedInUser());
     }
 
-    private void checkRequireFields(String name, String code, List<BindingDto> bindings) {
+    private void checkRequireFields(String name, String code, String css, List<BindingDto> bindings) {
         if (StringUtils.trimToNull(name) == null)
             throw new RestFieldException(i18nHelper.getText("issue.field.required", i18nHelper.getText("common.words.name")), "name");
-        if (StringUtils.trimToNull(code) == null)
-            throw new RestFieldException(i18nHelper.getText("issue.field.required", i18nHelper.getText("ru.mail.jira.plugins.jsincluder.configuration.script.code")), "code");
+        if (StringUtils.trimToNull(code) == null && StringUtils.trimToNull(css) == null)
+            throw new RestFieldException(i18nHelper.getText("ru.mail.jira.plugins.jsincluder.configuration.script.code.required") , "code");
         if (bindings.size() == 0)
             throw new RestFieldException(i18nHelper.getText("issue.field.required", i18nHelper.getText("ru.mail.jira.plugins.jsincluder.configuration.script.binding")), "binding");
     }
@@ -109,7 +109,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 List<ScriptDto> result = new ArrayList<ScriptDto>();
                 for (Script script : scriptManager.getScripts()) {
                     ScriptDto scriptDto = new ScriptDto(script);
-                    scriptDto.setBinding(buildBindingDtos(script.getID()));
+                    scriptDto.setBindings(buildBindingDtos(script.getID()));
                     result.add(scriptDto);
                 }
                 return result;
@@ -129,7 +129,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
                 Script script = scriptManager.getScript(id);
                 ScriptDto scriptDto = new ScriptDto(script);
-                scriptDto.setBinding(buildBindingDtos(script.getID()));
+                scriptDto.setBindings(buildBindingDtos(script.getID()));
                 return scriptDto;
             }
         }.getResponse();
@@ -144,20 +144,20 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             protected ScriptDto doAction() throws Exception {
                 if (!isUserAllowed())
                     throw new SecurityException();
-                checkRequireFields(scriptDto.getName(), scriptDto.getCode(), scriptDto.getBindings());
+                checkRequireFields(scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss(), scriptDto.getBindings());
 
-                Script script = scriptManager.createScript(scriptDto.getName(), scriptDto.getCode());
+                Script script = scriptManager.createScript(scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss());
                 for (BindingDto bindingDto : scriptDto.getBindings()) {
                     Long projectId = bindingDto.getProject() != null ? bindingDto.getProject().getId() : null;
                     List<String> issueTypes = new ArrayList<String>();
                     for (IssueTypeDto issueTypeDto : bindingDto.getIssueTypes())
                         issueTypes.add(issueTypeDto.getId());
-                    scriptManager.createBinding(script.getID(), projectId, CommonUtils.join(issueTypes), bindingDto.getCreateContextEnabled(), bindingDto.getViewContextEnabled(),
-                                                bindingDto.getEditContextEnabled(), bindingDto.getTransitionContextEnabled());
+                    scriptManager.createBinding(script.getID(), projectId, CommonUtils.join(issueTypes), bindingDto.isCreateContextEnabled(), bindingDto.isViewContextEnabled(),
+                                                bindingDto.isEditContextEnabled(), bindingDto.isTransitionContextEnabled());
                 }
 
                 ScriptDto scriptDtoNew = new ScriptDto(script);
-                scriptDtoNew.setBinding(buildBindingDtos(script.getID()));
+                scriptDtoNew.setBindings(buildBindingDtos(script.getID()));
                 return scriptDtoNew;
             }
         }.getResponse();
@@ -172,9 +172,9 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             protected ScriptDto doAction() throws Exception {
                 if (!isUserAllowed())
                     throw new SecurityException();
-                checkRequireFields(scriptDto.getName(), scriptDto.getCode(), scriptDto.getBindings());
+                checkRequireFields(scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss(), scriptDto.getBindings());
 
-                Script script = scriptManager.updateScript(scriptDto.getId(), scriptDto.getName(), scriptDto.getCode());
+                Script script = scriptManager.updateScript(scriptDto.getId(), scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss());
                 Map<Integer, Binding> oldBindings = new HashMap<Integer, Binding>(script.getBindings().length);
                 for (Binding binding : script.getBindings())
                     oldBindings.put(binding.getID(), binding);
@@ -186,14 +186,14 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
                     if (bindingDto.getId().startsWith("temp_")) {
                         scriptManager.createBinding(script.getID(), projectId, CommonUtils.join(issueTypes),
-                                                    bindingDto.getCreateContextEnabled(), bindingDto.getViewContextEnabled(),
-                                                    bindingDto.getEditContextEnabled(), bindingDto.getTransitionContextEnabled());
+                                                    bindingDto.isCreateContextEnabled(), bindingDto.isViewContextEnabled(),
+                                                    bindingDto.isEditContextEnabled(), bindingDto.isTransitionContextEnabled());
                     } else {
                         int bindingId = Integer.parseInt(bindingDto.getId());
                         if (oldBindings.get(bindingId) != null) {
                             scriptManager.updateBinding(bindingId, projectId, CommonUtils.join(issueTypes),
-                                                        bindingDto.getCreateContextEnabled(), bindingDto.getViewContextEnabled(),
-                                                        bindingDto.getEditContextEnabled(), bindingDto.getTransitionContextEnabled());
+                                                        bindingDto.isCreateContextEnabled(), bindingDto.isViewContextEnabled(),
+                                                        bindingDto.isEditContextEnabled(), bindingDto.isTransitionContextEnabled());
                             oldBindings.remove(bindingId);
                         }
                     }
@@ -202,7 +202,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 for (Integer oldBindingId : oldBindings.keySet())
                     scriptManager.deleteBinding(oldBindingId);
 
-                scriptDto.setBinding(buildBindingDtos(script.getID()));
+                scriptDto.setBindings(buildBindingDtos(script.getID()));
                 return scriptDto;
             }
         }.getResponse();

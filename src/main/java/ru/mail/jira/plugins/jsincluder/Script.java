@@ -13,6 +13,10 @@ public interface Script extends Entity {
     String getCode();
     void setCode(String code);
 
+    @StringLength(StringLength.UNLIMITED)
+    String getCss();
+    void setCss(String css);
+
     @OneToMany
     public Binding[] getBindings();
 }
