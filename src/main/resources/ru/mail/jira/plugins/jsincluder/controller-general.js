@@ -11,7 +11,8 @@ var JS_INCLUDER = {
     _executeJs: function(scripts) {
         for (var i = 0; i < scripts.length; i++)
             try {
-                eval(scripts[i].code);
+                if (scripts[i].code.length)
+                    eval(scripts[i].code);
             } catch (e) {
                 console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
                 alert(e.message);
@@ -22,8 +23,10 @@ var JS_INCLUDER = {
         AJS.$(AJS.format('style.jsincluder-css-{0}', JS_INCLUDER.params.context)).remove();
         var css = '';
         for (var i = 0; i < scripts.length; i++) {
-            css += AJS.format('\n/* Script {0} css rules */\n', scripts[i].name);
-            css += scripts[i].css + '\n';
+            if (scripts[i].css.length) {
+                css += AJS.format('\n/* Script {0} css rules */\n', scripts[i].name);
+                css += scripts[i].css + '\n';
+            }
         }
         if (css.length)
             AJS.$(AJS.format('<style class="jsincluder-css-{0}">', JS_INCLUDER.params.context)).text(css).appendTo('head');
