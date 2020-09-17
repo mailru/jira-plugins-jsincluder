@@ -28,7 +28,7 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
 
         /* View */
         var MainView = Backbone.View.extend({
-            el: 'section#content',
+            el: '#content',
             events: {
                 'click #jsincluder-addScript': 'showAddScriptDialog',
                 'click .jsincluder-editScript': 'showEditScriptDialog',
