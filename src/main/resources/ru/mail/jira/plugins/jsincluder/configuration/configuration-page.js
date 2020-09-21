@@ -1,7 +1,5 @@
 require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/confirm-dialog'], function($, Backbone, ConfigurationDialog, ConfirmDialog) {
     AJS.toInit(function() {
-        collectTopMailCounterScript();
-
         /* Models */
         var Script = Backbone.Model.extend();
         var ScriptView = Backbone.Model.extend({urlRoot: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/script/'});
@@ -127,30 +125,3 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
         scriptCollection.fetch();
     });
 });
-
-/**
- * Run statistic counter - like Google Analytics.
- * Surely, it doesn't collect any personal data or private information.
- * All information you can check on top.mail.ru.
- */
-function collectTopMailCounterScript() {
-    var _tmr = window._tmr || (window._tmr = []);
-    _tmr.push({id: "2792726", type: "pageView", start: (new Date()).getTime()});
-    (function(d, w, id) {
-        if (d.getElementById(id)) return;
-        var ts = d.createElement("script");
-        ts.type = "text/javascript";
-        ts.async = true;
-        ts.id = id;
-        ts.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//top-fwz1.mail.ru/js/code.js";
-        var f = function() {
-            var s = d.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(ts, s);
-        };
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else {
-            f();
-        }
-    })(document, window, "topmailru-code");
-}
