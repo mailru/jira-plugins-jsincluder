@@ -1,6 +1,5 @@
 package ru.mail.jira.plugins.jsincluder;
 
-import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.jira.config.IssueTypeManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
@@ -13,8 +12,6 @@ import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.atlassian.sal.api.transaction.TransactionCallback;
-import org.apache.commons.lang.StringUtils;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,13 +24,13 @@ import java.util.*;
 @Path("controller")
 @Produces({MediaType.APPLICATION_JSON})
 public class ControllerResource {
-    private final ActiveObjects ao;
     private final JiraAuthenticationContext jiraAuthenticationContext;
     private final IssueManager issueManager;
     private final ProjectManager projectManager;
     private final IssueTypeManager issueTypeManager;
     private final GroupManager groupManager;
     private final ProjectRoleManager projectRoleManager;
+    private final ScriptManager scriptManager;
 
     private enum Context {
         CREATE, VIEW, EDIT, TRANSITION;
@@ -47,23 +44,16 @@ public class ControllerResource {
         }
     }
 
-    public ControllerResource(ActiveObjects ao, JiraAuthenticationContext jiraAuthenticationContext, IssueManager issueManager,
+    public ControllerResource(JiraAuthenticationContext jiraAuthenticationContext, IssueManager issueManager,
                               ProjectManager projectManager, IssueTypeManager issueTypeManager, GroupManager groupManager,
-                              ProjectRoleManager projectRoleManager) {
-        this.ao = ao;
+                              ProjectRoleManager projectRoleManager, ScriptManager scriptManager) {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.issueManager = issueManager;
         this.projectManager = projectManager;
         this.issueTypeManager = issueTypeManager;
         this.groupManager = groupManager;
         this.projectRoleManager = projectRoleManager;
-    }
-
-    private String[] splitCommaString(String s) {
-        if (StringUtils.isEmpty(s))
-            return new String[0];
-        else
-            return s.trim().split("\\s*,\\s*");
+        this.scriptManager = scriptManager;
     }
 
     public ScriptsEntity getScriptsEntity(Project project, IssueType issueType, Context context) {
@@ -86,62 +76,35 @@ public class ControllerResource {
             result.putParam("userDetails", userDetails);
         }
 
-        Script[] allScripts = ao.executeInTransaction(new TransactionCallback<Script[]>() {
-            @Override
-            public Script[] doInTransaction() {
-                return ao.find(Script.class);
-            }
-        });
-
-        outer:
-        for (Script script : allScripts) {
-            boolean viewScriptAdded = false, editScriptAdded = false, transitionScriptAdded = false;
-
-            for (Binding binding : script.getBindings()) {
-                Long projectId = binding.getProjectId();
-                if (projectId != null && !projectId.equals(project.getId()))
-                    continue;
-
-                List<String> issueTypes = Arrays.asList(splitCommaString(binding.getIssueTypeIds()));
-                if (!issueTypes.isEmpty() && !issueTypes.contains(issueType.getId()))
-                    continue;
-
-                switch (context) {
-                    case CREATE:
-                        if (binding.isCreateContextEnabled()) {
-                            result.addCreateScript(new ScriptDto(script));
-                            continue outer;
-                        }
-                        break;
-                    case VIEW:
-                        if (!viewScriptAdded && binding.isViewContextEnabled()) {
-                            result.addViewScript(new ScriptDto(script));
-                            viewScriptAdded = true;
-                        }
-                        if (!editScriptAdded && binding.isEditContextEnabled()) {
-                            result.addEditScript(new ScriptDto(script));
-                            editScriptAdded = true;
-                        }
-                        if (!transitionScriptAdded && binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(new ScriptDto(script));
-                            transitionScriptAdded = true;
-                        }
-                        if (viewScriptAdded && editScriptAdded && transitionScriptAdded)
-                            continue outer;
-                        break;
-                    case EDIT:
-                        if (binding.isEditContextEnabled()) {
-                            result.addEditScript(new ScriptDto(script));
-                            continue outer;
-                        }
-                        break;
-                    case TRANSITION:
-                        if (binding.isTransitionContextEnabled()) {
-                            result.addTransitionScript(new ScriptDto(script));
-                            continue outer;
-                        }
-                        break;
-                }
+        for (Binding binding : scriptManager.findBindings(project.getId(), issueType.getId())) {
+            Script script = binding.getScript();
+            switch (context) {
+                case CREATE:
+                    if (binding.isCreateContextEnabled()) {
+                        result.addCreateScript(new ScriptDto(script));
+                    }
+                    break;
+                case VIEW:
+                    if (binding.isViewContextEnabled()) {
+                        result.addViewScript(new ScriptDto(script));
+                    }
+                    if (binding.isEditContextEnabled()) {
+                        result.addEditScript(new ScriptDto(script));
+                    }
+                    if (binding.isTransitionContextEnabled()) {
+                        result.addTransitionScript(new ScriptDto(script));
+                    }
+                    break;
+                case EDIT:
+                    if (binding.isEditContextEnabled()) {
+                        result.addEditScript(new ScriptDto(script));
+                    }
+                    break;
+                case TRANSITION:
+                    if (binding.isTransitionContextEnabled()) {
+                        result.addTransitionScript(new ScriptDto(script));
+                    }
+                    break;
             }
         }
 

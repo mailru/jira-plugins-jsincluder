@@ -2,22 +2,22 @@ package ru.mail.jira.plugins.jsincluder;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
 @XmlRootElement
 public class ScriptsEntity {
     @XmlElement
-    private List<ScriptDto> create = new ArrayList<ScriptDto>();
+    private Set<ScriptDto> create = new HashSet<>();
     @XmlElement
-    private List<ScriptDto> view = new ArrayList<ScriptDto>();
+    private Set<ScriptDto> view = new HashSet<>();
     @XmlElement
-    private List<ScriptDto> edit = new ArrayList<ScriptDto>();
+    private Set<ScriptDto> edit = new HashSet<>();
     @XmlElement
-    private List<ScriptDto> transition = new ArrayList<ScriptDto>();
+    private Set<ScriptDto> transition = new HashSet<>();
     @XmlElement
     private Map<String, Object> params = new HashMap<String, Object>();
 

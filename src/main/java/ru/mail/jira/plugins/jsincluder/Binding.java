@@ -1,15 +1,18 @@
 package ru.mail.jira.plugins.jsincluder;
 
 import net.java.ao.Entity;
+import net.java.ao.schema.Indexed;
 
 @SuppressWarnings("unused")
 public interface Binding extends Entity {
     Script getScript();
     void setScript(Script script);
 
+    @Indexed
     Long getProjectId();
     void setProjectId(Long projectId);
 
+    @Indexed
     String getIssueTypeIds();
     void setIssueTypeIds(String issueTypeIds);
 

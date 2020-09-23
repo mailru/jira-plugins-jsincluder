@@ -2,6 +2,8 @@ package ru.mail.jira.plugins.jsincluder;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.sal.api.transaction.TransactionCallback;
+import net.java.ao.Query;
+import org.apache.commons.lang3.StringUtils;
 
 public class ScriptManager {
     private final ActiveObjects ao;
@@ -39,6 +41,15 @@ public class ScriptManager {
                 if (binding == null)
                     throw new IllegalArgumentException(String.format("Binding is not found by id %s", id));
                 return binding;
+            }
+        });
+    }
+
+    public Binding[] findBindings(final Long projectId, final String issueTypeId) {
+        return ao.executeInTransaction(new TransactionCallback<Binding[]>() {
+            @Override
+            public Binding[] doInTransaction() {
+                return ao.find(Binding.class, Query.select().where("(PROJECT_ID = ? OR PROJECT_ID IS NULL) AND (ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS = ?)", projectId, "%" + issueTypeId + "%", StringUtils.EMPTY));
             }
         });
     }
