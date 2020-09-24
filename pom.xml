@@ -110,7 +110,7 @@
         <jira.version>8.12.1</jira.version>
         <amps.version>8.0.0</amps.version>
         <quick.reload.version>2.0.0</quick.reload.version>
-        <ao.version>0.19.7</ao.version>
+        <ao.version>1.2.0</ao.version>
         <fastdev.mvn.command>/usr/share/atlassian-plugin-sdk-6.2.11/apache-maven-3.2.1/bin/mvn</fastdev.mvn.command>
         <useFastdevCli>false</useFastdevCli>
     </properties>

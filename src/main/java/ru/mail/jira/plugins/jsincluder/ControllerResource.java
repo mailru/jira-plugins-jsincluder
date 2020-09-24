@@ -32,18 +32,6 @@ public class ControllerResource {
     private final ProjectRoleManager projectRoleManager;
     private final ScriptManager scriptManager;
 
-    private enum Context {
-        CREATE, VIEW, EDIT, TRANSITION;
-
-        static Context parseContext(String contextValue) {
-            try {
-                return valueOf(contextValue.toUpperCase());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-    }
-
     public ControllerResource(JiraAuthenticationContext jiraAuthenticationContext, IssueManager issueManager,
                               ProjectManager projectManager, IssueTypeManager issueTypeManager, GroupManager groupManager,
                               ProjectRoleManager projectRoleManager, ScriptManager scriptManager) {
@@ -76,13 +64,11 @@ public class ControllerResource {
             result.putParam("userDetails", userDetails);
         }
 
-        for (Binding binding : scriptManager.findBindings(project.getId(), issueType.getId())) {
+        for (Binding binding : scriptManager.findBindings(project.getId(), issueType.getId(), context)) {
             Script script = binding.getScript();
             switch (context) {
                 case CREATE:
-                    if (binding.isCreateContextEnabled()) {
-                        result.addCreateScript(new ScriptDto(script));
-                    }
+                    result.addCreateScript(new ScriptDto(script));
                     break;
                 case VIEW:
                     if (binding.isViewContextEnabled()) {
@@ -96,14 +82,10 @@ public class ControllerResource {
                     }
                     break;
                 case EDIT:
-                    if (binding.isEditContextEnabled()) {
-                        result.addEditScript(new ScriptDto(script));
-                    }
+                    result.addEditScript(new ScriptDto(script));
                     break;
                 case TRANSITION:
-                    if (binding.isTransitionContextEnabled()) {
-                        result.addTransitionScript(new ScriptDto(script));
-                    }
+                    result.addTransitionScript(new ScriptDto(script));
                     break;
             }
         }

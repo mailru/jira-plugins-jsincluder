@@ -45,11 +45,32 @@ public class ScriptManager {
         });
     }
 
-    public Binding[] findBindings(final Long projectId, final String issueTypeId) {
+    public Binding[] findBindings(final Long projectId, final String issueTypeId, Context context) {
         return ao.executeInTransaction(new TransactionCallback<Binding[]>() {
             @Override
             public Binding[] doInTransaction() {
-                return ao.find(Binding.class, Query.select().where("(PROJECT_ID = ? OR PROJECT_ID IS NULL) AND (ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS = ?)", projectId, "%" + issueTypeId + "%", StringUtils.EMPTY));
+                String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL) AND (ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS = ? OR ISSUE_TYPE_IDS = '')";
+                switch (context) {
+                    case CREATE:
+                        whereClause += " AND CREATE_CONTEXT_ENABLED = TRUE";
+                        break;
+                    case VIEW:
+                        whereClause += " AND (VIEW_CONTEXT_ENABLED = TRUE OR EDIT_CONTEXT_ENABLED = TRUE OR TRANSITION_CONTEXT_ENABLED = TRUE)";
+                        break;
+                    case EDIT:
+                        whereClause += " AND EDIT_CONTEXT_ENABLED = TRUE";
+                        break;
+                    case TRANSITION:
+                        whereClause += " AND TRANSITION_CONTEXT_ENABLED = TRUE";
+                        break;
+                }
+                return ao.find(Binding.class, Query.select().where(whereClause,
+                                                                   projectId,
+                                                                   "%, " + issueTypeId + ",%",
+                                                                   issueTypeId + ",%",
+                                                                   "%, " + issueTypeId,
+                                                                   issueTypeId
+                ));
             }
         });
     }
