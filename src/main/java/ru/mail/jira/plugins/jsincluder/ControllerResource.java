@@ -12,6 +12,7 @@ import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -44,6 +45,13 @@ public class ControllerResource {
         this.scriptManager = scriptManager;
     }
 
+    private String[] splitCommaString(String s) {
+        if (StringUtils.isEmpty(s))
+            return new String[0];
+        else
+            return s.trim().split("\\s*,\\s*");
+    }
+
     public ScriptsEntity getScriptsEntity(Project project, IssueType issueType, Context context) {
         ApplicationUser user = jiraAuthenticationContext.getLoggedInUser();
 
@@ -64,7 +72,11 @@ public class ControllerResource {
             result.putParam("userDetails", userDetails);
         }
 
-        for (Binding binding : scriptManager.findBindings(project.getId(), issueType.getId(), context)) {
+        for (Binding binding : scriptManager.findBindings(project.getId(), context)) {
+            List<String> issueTypes = Arrays.asList(splitCommaString(binding.getIssueTypeIds()));
+            if (!issueTypes.isEmpty() && !issueTypes.contains(issueType.getId()))
+                continue;
+
             Script script = binding.getScript();
             switch (context) {
                 case CREATE:

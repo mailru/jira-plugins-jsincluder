@@ -6,10 +6,10 @@ import net.java.ao.schema.Indexed;
 import net.java.ao.schema.Indexes;
 
 @Indexes({
-        @Index(name = "projectIssueTypesCreateContext", methodNames = {"getProjectId", "getIssueTypeIds", "isCreateContextEnabled"}),
-        @Index(name = "projectIssueTypesEditContext", methodNames = {"getProjectId", "getIssueTypeIds", "isEditContextEnabled"}),
-        @Index(name = "projectIssueTypesTransitionContext", methodNames = {"getProjectId", "getIssueTypeIds", "isTransitionContextEnabled"}),
-        @Index(name = "projectIssueTypesViewContext", methodNames = {"getProjectId", "getIssueTypeIds", "isViewContextEnabled", "isEditContextEnabled", "isTransitionContextEnabled"})
+        @Index(name = "projectCreateContext", methodNames = {"getProjectId", "isCreateContextEnabled"}),
+        @Index(name = "projectEditContext", methodNames = {"getProjectId", "isEditContextEnabled"}),
+        @Index(name = "projectTransitionContext", methodNames = {"getProjectId", "isTransitionContextEnabled"}),
+        @Index(name = "projectViewContext", methodNames = {"getProjectId", "isViewContextEnabled", "isEditContextEnabled", "isTransitionContextEnabled"})
 })
 public interface Binding extends Entity {
     Script getScript();

@@ -45,11 +45,11 @@ public class ScriptManager {
         });
     }
 
-    public Binding[] findBindings(final Long projectId, final String issueTypeId, Context context) {
+    public Binding[] findBindings(final Long projectId, Context context) {
         return ao.executeInTransaction(new TransactionCallback<Binding[]>() {
             @Override
             public Binding[] doInTransaction() {
-                String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL) AND (ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS LIKE ? OR ISSUE_TYPE_IDS = ? OR ISSUE_TYPE_IDS = '')";
+                String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL)";
                 switch (context) {
                     case CREATE:
                         whereClause += " AND CREATE_CONTEXT_ENABLED = TRUE";
@@ -64,13 +64,7 @@ public class ScriptManager {
                         whereClause += " AND TRANSITION_CONTEXT_ENABLED = TRUE";
                         break;
                 }
-                return ao.find(Binding.class, Query.select().where(whereClause,
-                                                                   projectId,
-                                                                   "%, " + issueTypeId + ",%",
-                                                                   issueTypeId + ",%",
-                                                                   "%, " + issueTypeId,
-                                                                   issueTypeId
-                ));
+                return ao.find(Binding.class, Query.select().where(whereClause,projectId));
             }
         });
     }
