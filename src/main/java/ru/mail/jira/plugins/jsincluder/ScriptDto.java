@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
 @Getter @Setter
@@ -31,5 +32,18 @@ public class ScriptDto {
         this.name = script.getName();
         this.code = script.getCode();
         this.css = script.getCss();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        ScriptDto script = (ScriptDto) o;
+        return this.id == script.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }

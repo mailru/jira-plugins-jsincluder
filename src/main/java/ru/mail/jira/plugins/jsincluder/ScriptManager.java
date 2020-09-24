@@ -2,6 +2,8 @@ package ru.mail.jira.plugins.jsincluder;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.sal.api.transaction.TransactionCallback;
+import net.java.ao.Query;
+import org.apache.commons.lang3.StringUtils;
 
 public class ScriptManager {
     private final ActiveObjects ao;
@@ -39,6 +41,30 @@ public class ScriptManager {
                 if (binding == null)
                     throw new IllegalArgumentException(String.format("Binding is not found by id %s", id));
                 return binding;
+            }
+        });
+    }
+
+    public Binding[] findBindings(final Long projectId, Context context) {
+        return ao.executeInTransaction(new TransactionCallback<Binding[]>() {
+            @Override
+            public Binding[] doInTransaction() {
+                String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL)";
+                switch (context) {
+                    case CREATE:
+                        whereClause += " AND CREATE_CONTEXT_ENABLED = TRUE";
+                        break;
+                    case VIEW:
+                        whereClause += " AND (VIEW_CONTEXT_ENABLED = TRUE OR EDIT_CONTEXT_ENABLED = TRUE OR TRANSITION_CONTEXT_ENABLED = TRUE)";
+                        break;
+                    case EDIT:
+                        whereClause += " AND EDIT_CONTEXT_ENABLED = TRUE";
+                        break;
+                    case TRANSITION:
+                        whereClause += " AND TRANSITION_CONTEXT_ENABLED = TRUE";
+                        break;
+                }
+                return ao.find(Binding.class, Query.select().where(whereClause,projectId));
             }
         });
     }
