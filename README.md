@@ -2,6 +2,12 @@
 
 Includes specified JS-scripts to particular pages.
 
+## Pages
+
+Configure Scripts
+
+/secure/JsIncluderScriptsConfigurationAction!default.jspa
+
 ## Rest API
 
 - **GET** [/rest/jsincluder/1.0/configuration/script]()
