@@ -3,123 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <parent>
+        <groupId>ru.mail.jira.plugins</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.3_8.5.1</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>jsincluder</artifactId>
     <version>2.2.5</version>
-
-    <organization>
-        <name>Andrey Molchanov | Mail.Ru Group</name>
-        <url>http://corp.mail.ru/en</url>
-    </organization>
-
-    <name>JsIncluder</name>
+    <name>Mail.ru Plugin: JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-api</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-core</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.plugins.rest</groupId>
-            <artifactId>atlassian-rest-common</artifactId>
-            <version>1.0.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.activeobjects</groupId>
-            <artifactId>activeobjects-plugin</artifactId>
-            <version>${ao.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mail.jira.plugins</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.2</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>jira-maven-plugin</artifactId>
-                <version>${amps.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.version}</productDataVersion>
-                    <jvmArgs>-Duser.timezone=GMT+3 -Xmx2g</jvmArgs>
-                    <systemPropertyVariables>
-                        <atlassian.mail.senddisabled>false</atlassian.mail.senddisabled>
-                        <fastdev.mvn.command>${fastdev.mvn.command}</fastdev.mvn.command>
-                    </systemPropertyVariables>
-
-                    <compressJs>false</compressJs>
-                    <compressCss>false</compressCss>
-                    <enableDevToolbox>false</enableDevToolbox>
-                    <enablePde>false</enablePde>
-                    <skipRestDocGeneration>true</skipRestDocGeneration>
-                    <allowGoogleTracking>false</allowGoogleTracking>
-                    <skipManifestValidation>true</skipManifestValidation>
-                    <extractDependencies>false</extractDependencies>
-
-                    <pluginArtifacts>
-                        <pluginArtifact>
-                            <groupId>com.atlassian.labs.plugins</groupId>
-                            <artifactId>quickreload</artifactId>
-                            <version>${quick.reload.version}</version>
-                        </pluginArtifact>
-                    </pluginArtifacts>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <properties>
-        <jira.version>8.12.1</jira.version>
-        <amps.version>8.0.0</amps.version>
-        <quick.reload.version>2.0.0</quick.reload.version>
-        <ao.version>1.2.0</ao.version>
-        <fastdev.mvn.command>/usr/share/atlassian-plugin-sdk-6.2.11/apache-maven-3.2.1/bin/mvn</fastdev.mvn.command>
-        <useFastdevCli>false</useFastdevCli>
-    </properties>
-
     <repositories>
-        <repository>
-            <id>atlassian</id>
-            <url>https://packages.atlassian.com/maven/repository/public</url>
-        </repository>
         <repository>
             <snapshots>
                 <enabled>false</enabled>
