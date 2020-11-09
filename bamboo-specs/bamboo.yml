@@ -18,6 +18,11 @@ Build jar:
     - script:
         - atlas-clean
         - atlas-package
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results:
+          - target/surefire-reports/*.xml
   artifacts:
     - name: jsinsluder
       location: target
