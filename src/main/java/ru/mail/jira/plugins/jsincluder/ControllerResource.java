@@ -14,7 +14,11 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -122,6 +126,7 @@ public class ControllerResource {
   public Response getCreateScripts(
       @QueryParam("projectId") final long projectId,
       @QueryParam("issueTypeId") final String issueTypeId) {
+    if (projectId == 0 || issueTypeId == null) return Response.serverError().build();
     Project project = projectManager.getProjectObj(projectId);
     IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
     if (project == null || issueType == null) return Response.serverError().build();
@@ -133,6 +138,7 @@ public class ControllerResource {
   @Path("/getIssueScripts")
   public Response getIssueScripts(
       @QueryParam("issueId") final long issueId, @QueryParam("context") final String contextValue) {
+    if (issueId == 0 || contextValue == null) return Response.serverError().build();
     Issue issue = issueManager.getIssueObject(issueId);
     Context context = Context.parseContext(contextValue);
     if (issue == null || context == null) return Response.serverError().build();
