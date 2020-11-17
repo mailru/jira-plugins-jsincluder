@@ -62,17 +62,17 @@ public class ScriptManager {
             String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL)";
             switch (context) {
               case CREATE:
-                whereClause += " AND CREATE_CONTEXT_ENABLED = TRUE";
+                whereClause += " AND CREATE_CONTEXT_ENABLED = 1";
                 break;
               case VIEW:
                 whereClause +=
-                    " AND (VIEW_CONTEXT_ENABLED = TRUE OR EDIT_CONTEXT_ENABLED = TRUE OR TRANSITION_CONTEXT_ENABLED = TRUE)";
+                    " AND (VIEW_CONTEXT_ENABLED = 1 OR EDIT_CONTEXT_ENABLED = 1 OR TRANSITION_CONTEXT_ENABLED = 1)";
                 break;
               case EDIT:
-                whereClause += " AND EDIT_CONTEXT_ENABLED = TRUE";
+                whereClause += " AND EDIT_CONTEXT_ENABLED = 1";
                 break;
               case TRANSITION:
-                whereClause += " AND TRANSITION_CONTEXT_ENABLED = TRUE";
+                whereClause += " AND TRANSITION_CONTEXT_ENABLED = 1";
                 break;
             }
             return ao.find(Binding.class, Query.select().where(whereClause, projectId));
