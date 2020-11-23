@@ -1,3 +1,4 @@
+/* (C)2020 */
 package ru.mail.jira.plugins.jsincluder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,42 +8,32 @@ import org.junit.jupiter.api.Test;
 class ScriptManagerTest {
 
   @Test
-  void getScript() {
-  }
+  void getScript() {}
 
   @Test
-  void getScripts() {
-  }
+  void getScripts() {}
 
   @Test
-  void getBinding() {
-  }
+  void getBinding() {}
 
   @Test
-  void findBindings() {
-  }
+  void findBindings() {}
 
   @Test
-  void createScript() {
-  }
+  void createScript() {}
 
   @Test
-  void updateScript() {
-  }
+  void updateScript() {}
 
   @Test
-  void deleteScript() {
-  }
+  void deleteScript() {}
 
   @Test
-  void createBinding() {
-  }
+  void createBinding() {}
 
   @Test
-  void updateBinding() {
-  }
+  void updateBinding() {}
 
   @Test
-  void deleteBinding() {
-  }
+  void deleteBinding() {}
 }
