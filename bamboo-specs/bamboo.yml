@@ -1,0 +1,37 @@
+version: 2
+plan:
+  project-key: JP
+  name: jsincluder Plugin
+  key: JSINCLUDER
+
+stages:
+  - Build:
+      jobs:
+        - Build jar
+  - Cleanup:
+      final: true
+      jobs:
+        - Cleanup
+
+Build jar:
+  tasks:
+    - script:
+        - atlas-clean
+        - atlas-package
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results:
+          - target/surefire-reports/*.xml
+  artifacts:
+    - name: jsinsluder
+      location: target
+      pattern: '*.jar'
+      required: true
+      shared: true
+
+Cleanup:
+  tasks:
+    - clean
+    - script:
+        - atlas-clean
