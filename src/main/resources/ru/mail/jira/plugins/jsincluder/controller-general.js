@@ -41,17 +41,21 @@ var JS_INCLUDER = {
     },
 
     executeCreateScripts: function(projectId, issueTypeId, $contextObject) {
-        AJS.$.ajax({
-            url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getCreateScripts',
-            data: {
-                projectId: projectId,
-                issueTypeId: issueTypeId
-            },
-            async: false,
-            success: function(data) {
-                JS_INCLUDER._execute(data[JS_INCLUDER.CONTEXT_CREATE], data.params, JS_INCLUDER.CONTEXT_CREATE, $contextObject);
-            }
-        });
+        if(projectId) {
+            AJS.$.ajax({
+                url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getCreateScripts',
+                data: {
+                    projectId: projectId,
+                    issueTypeId: issueTypeId
+                },
+                async: false,
+                success: function (data) {
+                    JS_INCLUDER._execute(data[JS_INCLUDER.CONTEXT_CREATE], data.params, JS_INCLUDER.CONTEXT_CREATE, $contextObject);
+                }
+            });
+        } else {
+            console.error('Error: no projectId',issueTypeId,$contextObject);
+        }
     },
 
     executeIssueScripts: function(issueId, context, $contextObject) {
