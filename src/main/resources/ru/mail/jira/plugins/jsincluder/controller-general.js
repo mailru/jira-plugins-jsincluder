@@ -59,26 +59,30 @@ var JS_INCLUDER = {
     },
 
     executeIssueScripts: function(issueId, context, $contextObject) {
-        if (JS_INCLUDER._cache[issueId] == null) {
-            JS_INCLUDER._cache[issueId] = {};
-            AJS.$.ajax({
-                url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getIssueScripts',
-                data: {
-                    issueId: issueId,
-                    context: context
-                },
-                async: false,
-                success: function(data) {
-                    JS_INCLUDER._cache[issueId][context] = data[context];
-                    if (context === JS_INCLUDER.CONTEXT_VIEW) {
-                        JS_INCLUDER._cache[issueId][JS_INCLUDER.CONTEXT_EDIT] = data[JS_INCLUDER.CONTEXT_EDIT];
-                        JS_INCLUDER._cache[issueId][JS_INCLUDER.CONTEXT_TRANSITION] = data[JS_INCLUDER.CONTEXT_TRANSITION];
+        if(issueId) {
+            if (JS_INCLUDER._cache[issueId] == null) {
+                JS_INCLUDER._cache[issueId] = {};
+                AJS.$.ajax({
+                    url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getIssueScripts',
+                    data: {
+                        issueId: issueId,
+                        context: context
+                    },
+                    async: false,
+                    success: function (data) {
+                        JS_INCLUDER._cache[issueId][context] = data[context];
+                        if (context === JS_INCLUDER.CONTEXT_VIEW) {
+                            JS_INCLUDER._cache[issueId][JS_INCLUDER.CONTEXT_EDIT] = data[JS_INCLUDER.CONTEXT_EDIT];
+                            JS_INCLUDER._cache[issueId][JS_INCLUDER.CONTEXT_TRANSITION] = data[JS_INCLUDER.CONTEXT_TRANSITION];
+                        }
+                        JS_INCLUDER._cache[issueId].params = data.params;
                     }
-                    JS_INCLUDER._cache[issueId].params = data.params;
-                }
-            });
+                });
+            }
+            JS_INCLUDER._execute(JS_INCLUDER._cache[issueId][context], JS_INCLUDER._cache[issueId].params, context, $contextObject);
+        } else {
+            console.error(AJS.format('Error: Can\'t execute /getIssueScripts because no issueId\n context = {0},$contextObject = {1}',context,$contextObject));
         }
-        JS_INCLUDER._execute(JS_INCLUDER._cache[issueId][context], JS_INCLUDER._cache[issueId].params, context, $contextObject);
     }
 };
 
