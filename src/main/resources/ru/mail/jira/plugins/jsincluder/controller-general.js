@@ -54,7 +54,7 @@ var JS_INCLUDER = {
                 }
             });
         } else {
-            console.error('Error: no projectId',issueTypeId,$contextObject);
+            console.error(AJS.format('Error: Can\'t execute /getCreateScripts because no projectId\n issueTypeId = {0},$contextObject = {1}',issueTypeId,$contextObject));
         }
     },
 
