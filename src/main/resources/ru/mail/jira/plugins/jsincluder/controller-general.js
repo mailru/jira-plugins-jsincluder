@@ -40,30 +40,36 @@ var JS_INCLUDER = {
         JS_INCLUDER._executeCss(scripts);
     },
 
-    executeCreateScripts: function(projectId, issueTypeId, $contextObject) {
-        if(projectId) {
+    executeCreateScripts: function (projectId, issueTypeId, $contextObject) {
+        if (projectId && issueTypeId) {
             AJS.$.ajax({
-                url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getCreateScripts',
+                url: AJS.contextPath()
+                    + '/rest/jsincluder/1.0/controller/getCreateScripts',
                 data: {
                     projectId: projectId,
                     issueTypeId: issueTypeId
                 },
                 async: false,
                 success: function (data) {
-                    JS_INCLUDER._execute(data[JS_INCLUDER.CONTEXT_CREATE], data.params, JS_INCLUDER.CONTEXT_CREATE, $contextObject);
+                    JS_INCLUDER._execute(data[JS_INCLUDER.CONTEXT_CREATE],
+                        data.params, JS_INCLUDER.CONTEXT_CREATE,
+                        $contextObject);
                 }
             });
         } else {
-            console.error(AJS.format('Error: Can\'t execute /getCreateScripts because no projectId\n issueTypeId = {0},$contextObject = {1}',issueTypeId,$contextObject));
+            console.error(AJS.format(
+                'Error: Can\'t execute /getCreateScripts because no projectId issueTypeId = {0}, $contextObject = {1}',
+                issueTypeId, $contextObject));
         }
     },
 
-    executeIssueScripts: function(issueId, context, $contextObject) {
-        if(issueId) {
+    executeIssueScripts: function (issueId, context, $contextObject) {
+        if (issueId) {
             if (JS_INCLUDER._cache[issueId] == null) {
                 JS_INCLUDER._cache[issueId] = {};
                 AJS.$.ajax({
-                    url: AJS.contextPath() + '/rest/jsincluder/1.0/controller/getIssueScripts',
+                    url: AJS.contextPath()
+                        + '/rest/jsincluder/1.0/controller/getIssueScripts',
                     data: {
                         issueId: issueId,
                         context: context
@@ -79,9 +85,12 @@ var JS_INCLUDER = {
                     }
                 });
             }
-            JS_INCLUDER._execute(JS_INCLUDER._cache[issueId][context], JS_INCLUDER._cache[issueId].params, context, $contextObject);
+            JS_INCLUDER._execute(JS_INCLUDER._cache[issueId][context],
+                JS_INCLUDER._cache[issueId].params, context, $contextObject);
         } else {
-            console.error(AJS.format('Error: Can\'t execute /getIssueScripts because no issueId\n context = {0},$contextObject = {1}',context,$contextObject));
+            console.error(AJS.format(
+                'Error: Can\'t execute /getIssueScripts because no issueId\n context = {0},$contextObject = {1}',
+                context, $contextObject));
         }
     }
 };
