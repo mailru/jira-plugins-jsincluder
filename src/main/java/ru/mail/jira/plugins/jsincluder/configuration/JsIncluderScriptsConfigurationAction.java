@@ -35,6 +35,8 @@ import ru.mail.jira.plugins.jsincluder.ProjectDto;
 import ru.mail.jira.plugins.jsincluder.Script;
 import ru.mail.jira.plugins.jsincluder.ScriptDto;
 import ru.mail.jira.plugins.jsincluder.ScriptManager;
+import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditChangedValue;
+import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditService;
 
 @Path("configuration")
 @WebSudoRequired
@@ -43,23 +45,26 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   private final GlobalPermissionManager globalPermissionManager;
   private final I18nHelper i18nHelper;
   private final IssueTypeManager issueTypeManager;
+  private final JsincluderAuditService jsincluderAuditService;
   private final ProjectManager projectManager;
   private final ProjectService projectService;
   private final ScriptManager scriptManager;
 
-  private String baseUrl;
+  private final String baseUrl;
 
   public JsIncluderScriptsConfigurationAction(
       @ComponentImport ApplicationProperties applicationProperties,
       @ComponentImport GlobalPermissionManager globalPermissionManager,
       @ComponentImport I18nHelper i18nHelper,
       @ComponentImport IssueTypeManager issueTypeManager,
+      JsincluderAuditService jsincluderAuditService,
       @ComponentImport ProjectManager projectManager,
       @ComponentImport ProjectService projectService,
       ScriptManager scriptManager) {
     this.globalPermissionManager = globalPermissionManager;
     this.i18nHelper = i18nHelper;
     this.issueTypeManager = issueTypeManager;
+    this.jsincluderAuditService = jsincluderAuditService;
     this.projectManager = projectManager;
     this.projectService = projectService;
     this.scriptManager = scriptManager;
@@ -175,6 +180,9 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
           bindingDto.isEditContextEnabled(),
           bindingDto.isTransitionContextEnabled());
     }
+    jsincluderAuditService.adminCreateScript(
+        JsincluderAuditChangedValue.create(
+            scriptManager.getScript(script.getID()), i18nHelper, issueTypeManager, projectManager));
 
     ScriptDto scriptDtoNew = new ScriptDto(script);
     scriptDtoNew.setBindings(buildBindingDtos(script.getID()));
@@ -185,11 +193,16 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   @Path("/script/{id}")
   @WebSudoNotRequired
   public Response updateScript(final ScriptDto scriptDto) {
-
     if (!isUserAllowed()) throw new SecurityException();
     checkRequireFields(
         scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss(), scriptDto.getBindings());
 
+    JsincluderAuditChangedValue oldValue =
+        JsincluderAuditChangedValue.create(
+            scriptManager.getScript(scriptDto.getId()),
+            i18nHelper,
+            issueTypeManager,
+            projectManager);
     Script script =
         scriptManager.updateScript(
             scriptDto.getId(), scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss());
@@ -228,6 +241,14 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     for (Integer oldBindingId : oldBindings.keySet()) scriptManager.deleteBinding(oldBindingId);
 
+    JsincluderAuditChangedValue newValue =
+        JsincluderAuditChangedValue.create(
+            scriptManager.getScript(scriptDto.getId()),
+            i18nHelper,
+            issueTypeManager,
+            projectManager);
+    jsincluderAuditService.adminEditScript(oldValue, newValue);
+
     scriptDto.setBindings(buildBindingDtos(script.getID()));
     return RestUtils.success(scriptDto);
   }
@@ -237,8 +258,11 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   @WebSudoNotRequired
   public Response deleteScript(@PathParam("id") final int id) {
     if (!isUserAllowed()) throw new SecurityException();
-
+    JsincluderAuditChangedValue oldValue =
+        JsincluderAuditChangedValue.create(
+            scriptManager.getScript(id), i18nHelper, issueTypeManager, projectManager);
     scriptManager.deleteScript(id);
+    jsincluderAuditService.adminDeleteScript(oldValue);
     return RestUtils.success(null);
   }
 
