@@ -130,7 +130,7 @@ public class JsincluderAuditServiceImpl implements JsincluderAuditService {
               .to(newValue.getCss())
               .build());
     }
-    if (changedValues.size() > 1) {
+    if (changedValues.size() > 0) {
       auditService.audit(
           AuditEvent.builder(SCRIPT_UPDATED)
               .affectedObject(
