@@ -6,6 +6,7 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectCategory;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.groups.GroupManager;
@@ -79,8 +80,10 @@ public class ControllerResource {
       userDetails.put("projectRoleNames", projectRoleNames);
       result.putParam("userDetails", userDetails);
     }
-
-    for (Binding binding : scriptManager.findBindings(project.getId(), context)) {
+    ProjectCategory projectCategory = project.getProjectCategory();
+    for (Binding binding :
+        scriptManager.findBindings(
+            project.getId(), projectCategory != null ? projectCategory.getId() : null, context)) {
       List<String> issueTypes = Arrays.asList(splitCommaString(binding.getIssueTypeIds()));
       if (!issueTypes.isEmpty() && !issueTypes.contains(issueType.getId())) continue;
 

@@ -10,16 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @XmlRootElement
-public class IssueTypeDto {
-  @XmlElement private String id;
+public class ProjectCategoryDto {
+  @XmlElement private String description;
+  @XmlElement private Long id;
   @XmlElement private String name;
-  @XmlElement private String iconUrl;
 
-  public IssueTypeDto() {}
+  public ProjectCategoryDto() {}
 
-  public IssueTypeDto(String id, String name, String iconUrl) {
+  public ProjectCategoryDto(Long id, String name, String description) {
     this.id = id;
     this.name = name;
-    this.iconUrl = iconUrl;
+    this.description = description;
   }
 }

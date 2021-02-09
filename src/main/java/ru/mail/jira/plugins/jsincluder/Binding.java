@@ -1,3 +1,4 @@
+/* (C)2021 */
 package ru.mail.jira.plugins.jsincluder;
 
 import net.java.ao.Entity;
@@ -6,37 +7,64 @@ import net.java.ao.schema.Indexed;
 import net.java.ao.schema.Indexes;
 
 @Indexes({
-        @Index(name = "projectCreateContext", methodNames = {"getProjectId", "isCreateContextEnabled"}),
-        @Index(name = "projectEditContext", methodNames = {"getProjectId", "isEditContextEnabled"}),
-        @Index(name = "projectTransitionContext", methodNames = {"getProjectId", "isTransitionContextEnabled"}),
-        @Index(name = "projectViewContext", methodNames = {"getProjectId", "isViewContextEnabled", "isEditContextEnabled", "isTransitionContextEnabled"})
+  @Index(
+      name = "projectCreateContext",
+      methodNames = {"getProjectId", "getProjectCategoryId", "isCreateContextEnabled"}),
+  @Index(
+      name = "projectEditContext",
+      methodNames = {"getProjectId", "getProjectCategoryId", "isEditContextEnabled"}),
+  @Index(
+      name = "projectTransitionContext",
+      methodNames = {"getProjectId", "getProjectCategoryId", "isTransitionContextEnabled"}),
+  @Index(
+      name = "projectViewContext",
+      methodNames = {
+        "getProjectId",
+        "getProjectCategoryId",
+        "isViewContextEnabled",
+        "isEditContextEnabled",
+        "isTransitionContextEnabled"
+      })
 })
 public interface Binding extends Entity {
-    Script getScript();
-    void setScript(Script script);
+  Script getScript();
 
-    @Indexed
-    Long getProjectId();
-    void setProjectId(Long projectId);
+  void setScript(Script script);
 
-    @Indexed
-    String getIssueTypeIds();
-    void setIssueTypeIds(String issueTypeIds);
+  @Indexed
+  Long getProjectId();
 
-    boolean isCreateContextEnabled();
-    void setCreateContextEnabled(boolean createContextEnabled);
+  void setProjectId(Long projectId);
 
-    boolean isViewContextEnabled();
-    void setViewContextEnabled(boolean viewContextEnabled);
+  @Indexed
+  Long getProjectCategoryId();
 
-    boolean isEditContextEnabled();
-    void setEditContextEnabled(boolean editContextEnabled);
+  void setProjectCategoryId(Long projectId);
 
-    boolean isTransitionContextEnabled();
-    void setTransitionContextEnabled(boolean transitionContextEnabled);
+  @Indexed
+  String getIssueTypeIds();
 
-    @Deprecated
-    String getProjectKeys();
-    @Deprecated
-    void setProjectKeys(String projectKeys);
+  void setIssueTypeIds(String issueTypeIds);
+
+  boolean isCreateContextEnabled();
+
+  void setCreateContextEnabled(boolean createContextEnabled);
+
+  boolean isViewContextEnabled();
+
+  void setViewContextEnabled(boolean viewContextEnabled);
+
+  boolean isEditContextEnabled();
+
+  void setEditContextEnabled(boolean editContextEnabled);
+
+  boolean isTransitionContextEnabled();
+
+  void setTransitionContextEnabled(boolean transitionContextEnabled);
+
+  @Deprecated
+  String getProjectKeys();
+
+  @Deprecated
+  void setProjectKeys(String projectKeys);
 }
