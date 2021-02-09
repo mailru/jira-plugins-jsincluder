@@ -25,13 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.commons.RestFieldException;
 import ru.mail.jira.plugins.commons.RestUtils;
-import ru.mail.jira.plugins.jsincluder.Binding;
-import ru.mail.jira.plugins.jsincluder.BindingDto;
-import ru.mail.jira.plugins.jsincluder.IssueTypeDto;
-import ru.mail.jira.plugins.jsincluder.ProjectDto;
-import ru.mail.jira.plugins.jsincluder.Script;
-import ru.mail.jira.plugins.jsincluder.ScriptDto;
-import ru.mail.jira.plugins.jsincluder.ScriptManager;
+import ru.mail.jira.plugins.jsincluder.*;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditChangedValue;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditService;
 

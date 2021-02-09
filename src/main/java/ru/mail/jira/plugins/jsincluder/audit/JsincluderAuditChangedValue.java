@@ -5,6 +5,7 @@ import com.atlassian.jira.config.IssueTypeManager;
 import com.atlassian.jira.issue.IssueConstant;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectCategory;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.util.I18nHelper;
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ public class JsincluderAuditChangedValue {
       return project != null
           ? String.format("%s (%s)", project.getName(), project.getKey())
           : String.format("Project with id %d not found", binding.getProjectId());
+    } else if (binding.getProjectCategoryId() != null) {
+      ProjectCategory projectCategory =
+          projectManager.getProjectCategory(binding.getProjectCategoryId());
+      return projectCategory != null
+          ? String.format("Project category: %s", projectCategory.getName())
+          : String.format("Project category with id %d not found", binding.getProjectCategoryId());
     } else {
       return i18nHelper.getText(
           "ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all");

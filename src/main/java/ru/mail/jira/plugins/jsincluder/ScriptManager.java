@@ -71,7 +71,13 @@ public class ScriptManager {
                 return ao.find(
                     Binding.class,
                     Query.select()
-                        .where(whereClause, projectId, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE));
+                        .where(
+                            whereClause,
+                            projectId,
+                            projectCategoryId,
+                            Boolean.TRUE,
+                            Boolean.TRUE,
+                            Boolean.TRUE));
               case EDIT:
                 whereClause += " AND EDIT_CONTEXT_ENABLED = ?";
                 break;
