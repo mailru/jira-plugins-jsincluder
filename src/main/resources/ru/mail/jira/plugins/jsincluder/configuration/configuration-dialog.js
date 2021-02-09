@@ -234,23 +234,33 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             var viewContextEnabled = $row.find('input.jsincluder-binding-viewContextEnabled:checked').length ? true : false;
             var transitionContextEnabled = $row.find('input.jsincluder-binding-transitionContextEnabled:checked').length ? true : false;
             const bindingType = target ?  target.type : null;
-            if (target) delete target.type;
             const res = {
                 id: id,
-                project: bindingType === "project" ? target : null,
-                projectCategory: bindingType === "category" ? target : null,
                 issueTypes: issueTypes,
                 createContextEnabled: createContextEnabled,
                 editContextEnabled: editContextEnabled,
                 viewContextEnabled: viewContextEnabled,
                 transitionContextEnabled: transitionContextEnabled
             }
+            switch (bindingType) {
+                case "project":
+                    res.project = {...target};
+                    res.projectCategory = null;
+                    delete res.project.type;
+                    break;
+            
+                case "category":
+                    res.projectCategory = {...target};
+                    res.project = null;
+                    delete res.projectCategory.type;
+                    break;
+            }
             return res;
         },
         _serializeBindingWithCollection: function(binding) {
             return {
                 id: binding.id,
-                project:  binding.get('project') || binding.get('projectCategory'),
+                project:  binding.get('project'),
                 projectCategory: binding.get('projectCategory'),
                 issueTypes: binding.get('issueTypes'),
                 createContextEnabled: binding.get('createContextEnabled'),
@@ -382,8 +392,9 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this._initIssueTypesField($addedRow);
             var project = binding.get('project');
             var projectCategory = binding.get('projectCategory');
-            if (project)
+            if (project) {
                 $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: project.id, key: project.key, name: project.name, avatarUrl: project.avatarUrl});
+            }
             else if (projectCategory) {
                 $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: projectCategory.id, name: projectCategory.name, description: projectCategory.description});
             }

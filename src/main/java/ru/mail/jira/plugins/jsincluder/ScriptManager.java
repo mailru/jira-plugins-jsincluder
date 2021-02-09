@@ -86,7 +86,8 @@ public class ScriptManager {
                 break;
             }
             return ao.find(
-                Binding.class, Query.select().where(whereClause, projectId, projectCategoryId));
+                Binding.class,
+                Query.select().where(whereClause, projectId, projectCategoryId, Boolean.TRUE));
           }
         });
   }
