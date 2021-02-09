@@ -20,6 +20,8 @@
                                 </span>
                                 {sp}{$binding.project.name} ({$binding.project.key})
                             </span>
+                        {elseif $binding.projectCategory}
+                            {$binding.projectCategory.name}
                         {else}
                             <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')}</i></span>
                         {/if}<br/>
@@ -66,11 +68,13 @@
 <tr data-id="{$binding.id}" class="jsincluder-binding-view">
     <td class="jsincluder-binding-project">
         <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
-            {if $binding.project}
+            {if $binding.project and $binding.project.avatarUrl}
                 <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
                     <span class="aui-avatar-inner"><img src="{$binding.project.avatarUrl}" /></span>
                 </span>
                 {sp}{$binding.project.name}
+            {elseif $binding.projectCategory }
+                {$binding.projectCategory.name}
             {else}
                 <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')}</i></span>
             {/if}
@@ -214,15 +218,17 @@
 */
 {template .projectField autoescape="false"}
     <div title="{$project.name}">
-        {if $project.id != -1}
+        {if $project.avatarUrl}
             <span class="aui-avatar aui-avatar-xsmall">
                 <span class="aui-avatar-inner">
                     <img src="{$project.avatarUrl}" />
                 </span>
             </span>
             {sp}{$project.name}
-        {else}
+        {elseif $project.id == -1}
             <i>{$project.name}</i>
+        {else}
+            <span>{$project.name}</span>
         {/if}
     </div>
 {/template}

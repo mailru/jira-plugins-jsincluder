@@ -1,4 +1,4 @@
-/* (C)2020 */
+/* (C)2021 */
 package ru.mail.jira.plugins.jsincluder;
 
 import net.java.ao.Entity;
@@ -9,17 +9,18 @@ import net.java.ao.schema.Indexes;
 @Indexes({
   @Index(
       name = "projectCreateContext",
-      methodNames = {"getProjectId", "isCreateContextEnabled"}),
+      methodNames = {"getProjectId", "getProjectCategoryId", "isCreateContextEnabled"}),
   @Index(
       name = "projectEditContext",
-      methodNames = {"getProjectId", "isEditContextEnabled"}),
+      methodNames = {"getProjectId", "getProjectCategoryId", "isEditContextEnabled"}),
   @Index(
       name = "projectTransitionContext",
-      methodNames = {"getProjectId", "isTransitionContextEnabled"}),
+      methodNames = {"getProjectId", "getProjectCategoryId", "isTransitionContextEnabled"}),
   @Index(
       name = "projectViewContext",
       methodNames = {
         "getProjectId",
+        "getProjectCategoryId",
         "isViewContextEnabled",
         "isEditContextEnabled",
         "isTransitionContextEnabled"
@@ -34,6 +35,11 @@ public interface Binding extends Entity {
   Long getProjectId();
 
   void setProjectId(Long projectId);
+
+  @Indexed
+  Long getProjectCategoryId();
+
+  void setProjectCategoryId(Long projectId);
 
   @Indexed
   String getIssueTypeIds();

@@ -54,12 +54,13 @@ public class ScriptManager {
         });
   }
 
-  public Binding[] findBindings(final Long projectId, Context context) {
+  public Binding[] findBindings(final Long projectId, Long projectCategoryId, Context context) {
     return ao.executeInTransaction(
         new TransactionCallback<Binding[]>() {
           @Override
           public Binding[] doInTransaction() {
-            String whereClause = "(PROJECT_ID = ? OR PROJECT_ID IS NULL)";
+            String whereClause =
+                "((PROJECT_ID = ? OR PROJECT_CATEGORY_ID = ?) OR (PROJECT_CATEGORY_ID IS NULL AND PROJECT_ID IS NULL))";
             switch (context) {
               case CREATE:
                 whereClause += " AND CREATE_CONTEXT_ENABLED = ?";
@@ -79,7 +80,7 @@ public class ScriptManager {
                 break;
             }
             return ao.find(
-                Binding.class, Query.select().where(whereClause, projectId, Boolean.TRUE));
+                Binding.class, Query.select().where(whereClause, projectId, projectCategoryId));
           }
         });
   }
@@ -130,6 +131,7 @@ public class ScriptManager {
   public Binding createBinding(
       final int scriptId,
       final Long projectId,
+      final Long projectCategoryId,
       final String issueTypeIds,
       final boolean createContextEnabled,
       final boolean viewContextEnabled,
@@ -142,6 +144,7 @@ public class ScriptManager {
             Binding binding = ao.create(Binding.class);
             binding.setScript(getScript(scriptId));
             binding.setProjectId(projectId);
+            binding.setProjectCategoryId(projectCategoryId);
             binding.setIssueTypeIds(issueTypeIds);
             binding.setCreateContextEnabled(createContextEnabled);
             binding.setViewContextEnabled(viewContextEnabled);
@@ -156,6 +159,7 @@ public class ScriptManager {
   public Binding updateBinding(
       final int id,
       final Long projectId,
+      final Long projectCategoryId,
       final String issueTypeIds,
       final boolean createContextEnabled,
       final boolean viewContextEnabled,
@@ -167,6 +171,7 @@ public class ScriptManager {
           public Binding doInTransaction() {
             Binding binding = getBinding(id);
             binding.setProjectId(projectId);
+            binding.setProjectCategoryId(projectCategoryId);
             binding.setIssueTypeIds(issueTypeIds);
             binding.setCreateContextEnabled(createContextEnabled);
             binding.setViewContextEnabled(viewContextEnabled);
