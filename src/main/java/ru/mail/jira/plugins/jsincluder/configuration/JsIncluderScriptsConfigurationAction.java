@@ -356,13 +356,26 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   @Path("/issuetype")
   @WebSudoNotRequired
   public Response getIssueTypes(
-      @QueryParam("projectId") final String projectId, @QueryParam("filter") final String filter) {
+      @QueryParam("projectCategoryId") final String projectCategoryId,
+      @QueryParam("projectId") final String projectId,
+      @QueryParam("filter") final String filter) {
     List<IssueTypeDto> result = new ArrayList<IssueTypeDto>();
     Collection<IssueType> allIssueType = new ArrayList<IssueType>();
-    if (StringUtils.isEmpty(projectId)) allIssueType = issueTypeManager.getIssueTypes();
-    else {
+    if (!StringUtils.isEmpty(projectId)) {
       Project project = projectManager.getProjectObj(Long.parseLong(projectId));
       if (project != null) allIssueType = project.getIssueTypes();
+    } else if (!StringUtils.isEmpty(projectCategoryId)) {
+      ProjectCategory projectCategory =
+          projectManager.getProjectCategory(Long.parseLong(projectCategoryId));
+      if (projectCategory != null) {
+        Set<IssueType> categoryIssueTypes = new HashSet<>();
+        projectManager
+            .getProjectsFromProjectCategory(projectCategory)
+            .forEach(project -> categoryIssueTypes.addAll(project.getIssueTypes()));
+        allIssueType.addAll(categoryIssueTypes);
+      }
+    } else {
+      allIssueType = issueTypeManager.getIssueTypes();
     }
 
     String formattedFilter = filter.trim().toLowerCase();

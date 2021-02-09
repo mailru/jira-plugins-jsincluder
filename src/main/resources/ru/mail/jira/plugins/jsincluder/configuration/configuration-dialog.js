@@ -142,7 +142,9 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     url: function() {
                         var projectData = $row.find('.jsincluder-binding-project').auiSelect2('data');
                         var projectId = projectData.id != -1? projectData.id : '';
-                        return AJS.contextPath() + '/rest/jsincluder/1.0/configuration/issuetype?projectId=' + projectId;
+                        var url = AJS.contextPath() + '/rest/jsincluder/1.0/configuration/issuetype';
+                        url += (projectData.description ? '?projectCategoryId=' : '?projectId=') + projectId;
+                        return url;
                     },
                     dataType: 'json',
                     data: function(filter) {
