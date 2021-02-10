@@ -1,4 +1,4 @@
-/* (C)2020 */
+/* (C)2021 */
 package ru.mail.jira.plugins.jsincluder;
 
 import java.util.HashMap;

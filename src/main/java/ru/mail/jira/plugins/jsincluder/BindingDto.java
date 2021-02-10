@@ -1,4 +1,4 @@
-/* (C)2020 */
+/* (C)2021 */
 package ru.mail.jira.plugins.jsincluder;
 
 import java.util.List;
@@ -14,6 +14,7 @@ import lombok.Setter;
 public class BindingDto {
   @XmlElement private String id;
   @XmlElement private ProjectDto project;
+  @XmlElement private ProjectCategoryDto projectCategory;
   @XmlElement private List<IssueTypeDto> issueTypes;
   @XmlElement private boolean createContextEnabled;
   @XmlElement private boolean viewContextEnabled;

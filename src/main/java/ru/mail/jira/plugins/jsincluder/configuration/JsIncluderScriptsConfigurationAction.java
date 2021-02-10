@@ -8,6 +8,7 @@ import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectCategory;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.user.ApplicationUser;
@@ -16,11 +17,7 @@ import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.websudo.WebSudoNotRequired;
 import com.atlassian.sal.api.websudo.WebSudoRequired;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,13 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.commons.RestFieldException;
 import ru.mail.jira.plugins.commons.RestUtils;
-import ru.mail.jira.plugins.jsincluder.Binding;
-import ru.mail.jira.plugins.jsincluder.BindingDto;
-import ru.mail.jira.plugins.jsincluder.IssueTypeDto;
-import ru.mail.jira.plugins.jsincluder.ProjectDto;
-import ru.mail.jira.plugins.jsincluder.Script;
-import ru.mail.jira.plugins.jsincluder.ScriptDto;
-import ru.mail.jira.plugins.jsincluder.ScriptManager;
+import ru.mail.jira.plugins.jsincluder.*;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditChangedValue;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditService;
 
@@ -112,6 +103,17 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 String.format(
                     "projectavatar?pid=%d&avatarId=%d&size=xxmall",
                     project.getId(), project.getAvatar().getId())));
+
+      ProjectCategory projectCategory =
+          projectManager.getProjectCategory(binding.getProjectCategoryId());
+      if (projectCategory != null) {
+        bindingDto.setProjectCategory(
+            new ProjectCategoryDto(
+                projectCategory.getId(),
+                projectCategory.getName(),
+                projectCategory.getDescription()));
+      }
+
       List<IssueTypeDto> issueTypes = new ArrayList<IssueTypeDto>();
       for (String issueTypeId : CommonUtils.split(binding.getIssueTypeIds())) {
         IssueType issueType = issueTypeManager.getIssueType(issueTypeId);
@@ -168,12 +170,15 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
         scriptManager.createScript(scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss());
     for (BindingDto bindingDto : scriptDto.getBindings()) {
       Long projectId = bindingDto.getProject() != null ? bindingDto.getProject().getId() : null;
+      Long projectCategoryId =
+          bindingDto.getProjectCategory() != null ? bindingDto.getProjectCategory().getId() : null;
       List<String> issueTypes = new ArrayList<String>();
       for (IssueTypeDto issueTypeDto : bindingDto.getIssueTypes())
         issueTypes.add(issueTypeDto.getId());
       scriptManager.createBinding(
           script.getID(),
           projectId,
+          projectCategoryId,
           CommonUtils.join(issueTypes),
           bindingDto.isCreateContextEnabled(),
           bindingDto.isViewContextEnabled(),
@@ -210,6 +215,8 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
     for (Binding binding : script.getBindings()) oldBindings.put(binding.getID(), binding);
     for (BindingDto bindingDto : scriptDto.getBindings()) {
       Long projectId = bindingDto.getProject() != null ? bindingDto.getProject().getId() : null;
+      Long projectCategoryId =
+          bindingDto.getProjectCategory() != null ? bindingDto.getProjectCategory().getId() : null;
       List<String> issueTypes = new ArrayList<String>();
       for (IssueTypeDto issueTypeDto : bindingDto.getIssueTypes())
         issueTypes.add(issueTypeDto.getId());
@@ -218,6 +225,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
         scriptManager.createBinding(
             script.getID(),
             projectId,
+            projectCategoryId,
             CommonUtils.join(issueTypes),
             bindingDto.isCreateContextEnabled(),
             bindingDto.isViewContextEnabled(),
@@ -229,6 +237,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
           scriptManager.updateBinding(
               bindingId,
               projectId,
+              projectCategoryId,
               CommonUtils.join(issueTypes),
               bindingDto.isCreateContextEnabled(),
               bindingDto.isViewContextEnabled(),
@@ -287,7 +296,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   @Path("/project")
   @WebSudoNotRequired
   public Response getProjects(@QueryParam("filter") final String filter) {
-    List<ProjectDto> result = new ArrayList<ProjectDto>();
+    List<ProjectDto> projectsDtos = new ArrayList<ProjectDto>();
     ApplicationUser user = getLoggedInUser();
 
     String formattedFilter = filter.trim().toLowerCase();
@@ -295,9 +304,23 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
         isUserAllowed()
             ? projectManager.getProjectObjects()
             : projectService.getAllProjects(user).get();
+
+    Map<Long, ProjectCategoryDto> allProjectCategoryDtos = new HashMap<>();
+    allProjects.forEach(
+        project -> {
+          ProjectCategory category = project.getProjectCategory();
+          if (category != null
+              && StringUtils.containsIgnoreCase(category.getName(), formattedFilter)) {
+            allProjectCategoryDtos.put(
+                category.getId(),
+                new ProjectCategoryDto(
+                    category.getId(), category.getName(), category.getDescription()));
+          }
+        });
+
     if (StringUtils.isEmpty(formattedFilter))
       for (Project project : allProjects) {
-        result.add(
+        projectsDtos.add(
             new ProjectDto(
                 project.getId(),
                 project.getKey(),
@@ -305,14 +328,14 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                 String.format(
                     "projectavatar?pid=%d&avatarId=%d&size=xxmall",
                     project.getId(), project.getAvatar().getId())));
-        if (result.size() >= 10) break;
+        if (projectsDtos.size() >= 10) break;
       }
     else
       for (Project project : allProjects)
         if (StringUtils.containsIgnoreCase(project.getName(), formattedFilter)
             || StringUtils.containsIgnoreCase(project.getKey(), formattedFilter))
-          if (result.size() < 10)
-            result.add(
+          if (projectsDtos.size() < 10)
+            projectsDtos.add(
                 new ProjectDto(
                     project.getId(),
                     project.getKey(),
@@ -320,20 +343,39 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                     String.format(
                         "projectavatar?pid=%d&avatarId=%d&size=xxmall",
                         project.getId(), project.getAvatar().getId())));
-    return RestUtils.success(result);
+    return RestUtils.success(
+        new HashMap<String, Object>() {
+          {
+            put("projects", projectsDtos);
+            put("categories", allProjectCategoryDtos.values());
+          }
+        });
   }
 
   @GET
   @Path("/issuetype")
   @WebSudoNotRequired
   public Response getIssueTypes(
-      @QueryParam("projectId") final String projectId, @QueryParam("filter") final String filter) {
+      @QueryParam("projectCategoryId") final String projectCategoryId,
+      @QueryParam("projectId") final String projectId,
+      @QueryParam("filter") final String filter) {
     List<IssueTypeDto> result = new ArrayList<IssueTypeDto>();
     Collection<IssueType> allIssueType = new ArrayList<IssueType>();
-    if (StringUtils.isEmpty(projectId)) allIssueType = issueTypeManager.getIssueTypes();
-    else {
+    if (!StringUtils.isEmpty(projectId)) {
       Project project = projectManager.getProjectObj(Long.parseLong(projectId));
       if (project != null) allIssueType = project.getIssueTypes();
+    } else if (!StringUtils.isEmpty(projectCategoryId)) {
+      ProjectCategory projectCategory =
+          projectManager.getProjectCategory(Long.parseLong(projectCategoryId));
+      if (projectCategory != null) {
+        Set<IssueType> categoryIssueTypes = new HashSet<>();
+        projectManager
+            .getProjectsFromProjectCategory(projectCategory)
+            .forEach(project -> categoryIssueTypes.addAll(project.getIssueTypes()));
+        allIssueType.addAll(categoryIssueTypes);
+      }
+    } else {
+      allIssueType = issueTypeManager.getIssueTypes();
     }
 
     String formattedFilter = filter.trim().toLowerCase();

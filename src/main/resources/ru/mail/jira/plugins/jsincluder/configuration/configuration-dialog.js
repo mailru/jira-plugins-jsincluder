@@ -1,7 +1,7 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editorJS;
     var editorCSS;
-    var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all'), avatarUrl: ''};
+    var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
     return Backbone.View.extend({
         el: '#jsincluder-configuration-dialog',
         events: {
@@ -65,9 +65,29 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                         };
                     },
                     results: function(data) {
-                        data.unshift(allProjects);
+                        results = [{
+                            name: "Projects",
+                            children: [allProjects]  
+                        }];
+
+                        if (data.projects) {
+                            results[0].children.push(...data.projects.map(c => {
+                                c.type = "project";
+                                return c;
+                            }));
+                        }
+
+                        if (data.categories) {
+                            results.push({
+                                name: "Categories",
+                                children: data.categories.map(c => {
+                                    c.type = "category";
+                                    return c;
+                                })
+                            });
+                        }
                         return {
-                            results: data
+                            results: results
                         };
                     },
                     cache: true
@@ -122,7 +142,9 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     url: function() {
                         var projectData = $row.find('.jsincluder-binding-project').auiSelect2('data');
                         var projectId = projectData.id != -1? projectData.id : '';
-                        return AJS.contextPath() + '/rest/jsincluder/1.0/configuration/issuetype?projectId=' + projectId;
+                        var url = AJS.contextPath() + '/rest/jsincluder/1.0/configuration/issuetype';
+                        url += (projectData.description ? '?projectCategoryId=' : '?projectId=') + projectId;
+                        return url;
                     },
                     dataType: 'json',
                     data: function(filter) {
@@ -205,26 +227,41 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             };
         },
         _serializeBinding: function(id, $row) {
-            var project = $row.find('.jsincluder-binding-project').auiSelect2('data').id != -1? $row.find('.jsincluder-binding-project').auiSelect2('data') : null;
+            var target = $row.find('.jsincluder-binding-project').auiSelect2('data').id != -1? $row.find('.jsincluder-binding-project').auiSelect2('data') : null;
             var issueTypes = $row.find('.jsincluder-binding-issueTypes').auiSelect2('data');
             var createContextEnabled = $row.find('input.jsincluder-binding-createContextEnabled:checked').length ? true : false;
             var editContextEnabled = $row.find('input.jsincluder-binding-editContextEnabled:checked').length ? true : false;
             var viewContextEnabled = $row.find('input.jsincluder-binding-viewContextEnabled:checked').length ? true : false;
             var transitionContextEnabled = $row.find('input.jsincluder-binding-transitionContextEnabled:checked').length ? true : false;
-            return {
+            const bindingType = target ?  target.type : null;
+            const res = {
                 id: id,
-                project:  project,
                 issueTypes: issueTypes,
                 createContextEnabled: createContextEnabled,
                 editContextEnabled: editContextEnabled,
                 viewContextEnabled: viewContextEnabled,
                 transitionContextEnabled: transitionContextEnabled
             }
+            switch (bindingType) {
+                case "project":
+                    res.project = {...target};
+                    res.projectCategory = null;
+                    delete res.project.type;
+                    break;
+            
+                case "category":
+                    res.projectCategory = {...target};
+                    res.project = null;
+                    delete res.projectCategory.type;
+                    break;
+            }
+            return res;
         },
         _serializeBindingWithCollection: function(binding) {
             return {
                 id: binding.id,
                 project:  binding.get('project'),
+                projectCategory: binding.get('projectCategory'),
                 issueTypes: binding.get('issueTypes'),
                 createContextEnabled: binding.get('createContextEnabled'),
                 editContextEnabled: binding.get('editContextEnabled'),
@@ -354,8 +391,13 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this._initProjectField($addedRow);
             this._initIssueTypesField($addedRow);
             var project = binding.get('project');
-            if (project)
+            var projectCategory = binding.get('projectCategory');
+            if (project) {
                 $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: project.id, key: project.key, name: project.name, avatarUrl: project.avatarUrl});
+            }
+            else if (projectCategory) {
+                $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , {id: projectCategory.id, name: projectCategory.name, description: projectCategory.description});
+            }
             else
                 $addedRow.find('.jsincluder-binding-project').auiSelect2('data' , allProjects);
             var issueTypes = [];
