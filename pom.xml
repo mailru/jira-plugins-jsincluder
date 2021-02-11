@@ -15,14 +15,4 @@
     <name>Mail.ru Plugin: JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>jira-plugins</id>
-            <url>https://is-artifactory.corp.mail.ru/artifactory/jira-plugins</url>
-        </repository>
-    </repositories>
 </project>
