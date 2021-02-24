@@ -16,4 +16,8 @@
     <name>Mail.ru Plugin: JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
+
+    <properties>
+        <jira.version>8.7.0</jira.version>
+    </properties>
 </project>
