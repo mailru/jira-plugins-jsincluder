@@ -40,6 +40,10 @@ var JS_INCLUDER = {
         JS_INCLUDER._executeCss(scripts);
     },
 
+    removeCssScripts(context) {
+        AJS.$(AJS.format('style.jsincluder-css-{0}', context)).remove();
+    },
+
     executeCreateScripts: function (projectId, issueTypeId, $contextObject) {
         if (projectId && issueTypeId) {
             AJS.$.ajax({
@@ -118,6 +122,18 @@ require(['jquery', 'wrm/context-path', 'jira/util/formatter', 'jira/util/events'
 
                     if ($context.children('#issue-workflow-transition').length)
                         JS_INCLUDER.executeIssueScripts($context.find('input[name="id"]').val(), JS_INCLUDER.CONTEXT_TRANSITION, $context);
+                }
+            });
+
+            Events.bind("Dialog.hide", function(e, $context, reason) {
+                if ($context.is("#create-issue-dialog")) {
+                    JS_INCLUDER.removeCssScripts(JS_INCLUDER.CONTEXT_CREATE);
+                }
+                if ($context.is("#edit-issue-dialog")) {
+                    JS_INCLUDER.removeCssScripts(JS_INCLUDER.CONTEXT_EDIT);
+                }
+                if ($context.has("[id*='workflow-transition']")) {
+                    JS_INCLUDER.removeCssScripts(JS_INCLUDER.CONTEXT_TRANSITION);
                 }
             });
         });
