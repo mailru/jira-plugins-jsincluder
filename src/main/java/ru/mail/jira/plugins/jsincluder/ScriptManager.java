@@ -35,7 +35,7 @@ public class ScriptManager {
         new TransactionCallback<Script[]>() {
           @Override
           public Script[] doInTransaction() {
-            return ao.find(Script.class);
+            return ao.find(Script.class, Query.select().order("NAME ASC"));
           }
         });
   }
