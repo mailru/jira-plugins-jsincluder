@@ -133,14 +133,6 @@ ul.jsincluder-bindings > li:not(:first-child) {
     padding: 12px 10px !important;
 }
 
-#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-project {
-    width: 200px;
-}
-
-#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-issueTypes {
-    width: 170px;
-}
-
 ul.jsincluder-binding-issueTypes-list {
     list-style: none;
     margin: 0;
