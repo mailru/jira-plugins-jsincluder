@@ -19,6 +19,7 @@ public class ScriptDto {
   @XmlElement private String code;
   @XmlElement private String css;
   @XmlElement private List<BindingDto> bindings = new ArrayList<>();
+  @XmlElement private Boolean disabled;
 
   public ScriptDto() {}
 
@@ -27,6 +28,7 @@ public class ScriptDto {
     this.name = script.getName();
     this.code = script.getCode();
     this.css = script.getCss();
+    this.disabled = script.isDisabled();
   }
 
   @Override

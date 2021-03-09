@@ -107,7 +107,12 @@ public class ScriptManager {
         });
   }
 
-  public Script updateScript(final int id, final String name, final String code, final String css) {
+  public Script updateScript(
+      final int id,
+      final String name,
+      final String code,
+      final String css,
+      final Boolean disabled) {
     return ao.executeInTransaction(
         new TransactionCallback<Script>() {
           @Override
@@ -116,6 +121,9 @@ public class ScriptManager {
             script.setName(name);
             script.setCode(code);
             script.setCss(css);
+            if (disabled != null) {
+              script.setDisabled(disabled);
+            }
             script.save();
             return script;
           }

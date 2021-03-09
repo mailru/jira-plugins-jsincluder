@@ -6,6 +6,10 @@ ul.jsincluder-bindings > li:not(:first-child) {
     padding-top: 15px;
 }
 
+#jsincluder-scripts .jsincluder-script-name {
+    padding-left: 10px;
+}
+
 .jsincluder-issue-types-list {
     display: inline;
     list-style-type: none;

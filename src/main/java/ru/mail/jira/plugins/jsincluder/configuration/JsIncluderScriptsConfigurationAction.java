@@ -210,7 +210,11 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             projectManager);
     Script script =
         scriptManager.updateScript(
-            scriptDto.getId(), scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss());
+            scriptDto.getId(),
+            scriptDto.getName(),
+            scriptDto.getCode(),
+            scriptDto.getCss(),
+            scriptDto.getDisabled());
     Map<Integer, Binding> oldBindings = new HashMap<Integer, Binding>(script.getBindings().length);
     for (Binding binding : script.getBindings()) oldBindings.put(binding.getID(), binding);
     for (BindingDto bindingDto : scriptDto.getBindings()) {

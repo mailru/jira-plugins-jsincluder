@@ -30,7 +30,8 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
             events: {
                 'click #jsincluder-addScript': 'showAddScriptDialog',
                 'click .jsincluder-editScript': 'showEditScriptDialog',
-                'click .jsincluder-deleteScript': 'showDeleteScriptDialog'
+                'click .jsincluder-deleteScript': 'showDeleteScriptDialog',
+                'click .jsincluder-disableScript': 'disableScript'
             },
             initialize: function() {
                 this.collection.on('request', this.startLoadingScriptsCallback);
@@ -107,6 +108,30 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                 });
 
                 confirmDialog.show();
+            },
+            disableScript: function(e) {
+                var $toggleButton = $(e.currentTarget);
+                var script = this.collection.get($toggleButton.parents('.jsincluder-script').attr('id'));
+                $toggleButton.busy = true;
+                var scriptView = new ScriptView({id: script.id});
+                scriptView.save(
+                    {
+                        name: script.attributes.name,
+                        code: script.attributes.code,
+                        css: script.attributes.css,
+                        bindings: script.attributes.bindings,
+                        disabled: !script.attributes.disabled
+                    },
+                    {
+                        success: $.proxy(function(response) {
+                            this.collection.add(response, {merge: true});
+                        }, this),
+                        error: $.proxy(this._ajaxErrorHandler, this),
+                        complete: $.proxy(function() {
+                            $toggleButton.busy = false;
+                        }, this)
+                    }
+                );
             },
             _addScript: function(script) {
                 $('#jsincluder-scripts').append(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON()}));

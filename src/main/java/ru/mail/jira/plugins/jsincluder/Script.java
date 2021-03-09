@@ -23,4 +23,8 @@ public interface Script extends Entity {
 
   @OneToMany
   public Binding[] getBindings();
+
+  boolean isDisabled();
+
+  void setDisabled(boolean disabled);
 }
