@@ -3,6 +3,7 @@
 /**
  * Script entries list
  * @param script script
+ * @param expandBindings expandBindings
  */
 {template .scriptEntry autoescape="false"}
     <tr id="{$script.id}" class="jsincluder-script">
@@ -13,7 +14,7 @@
         <td>
             <ul class="jsincluder-bindings">
                 {foreach $binding in $script.bindings}
-                    <li id="{$binding.id}" class="jsincluder-binding">
+                    <li id="{$binding.id}" class="jsincluder-binding {if not isFirst($binding) and $expandBindings}hidden{/if}">
                         {if $binding.project}
                             <span>
                                 <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
@@ -48,6 +49,19 @@
                         </span><br/>
                     </li>
                 {/foreach}
+                {if length($script.bindings) > 1}
+                    <ul class="operations-list">
+                        <li>
+                            <a href="#" class="jsincluder-expandBindings">
+                                {if $expandBindings}
+                                    {getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.expand')}
+                                {else}
+                                    {getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.collapse')}
+                                {/if}
+                            </a>
+                        </li>
+                    </ul>
+                {/if}
             </ul>
         </td>
         <td class="jsincluder-operations">
