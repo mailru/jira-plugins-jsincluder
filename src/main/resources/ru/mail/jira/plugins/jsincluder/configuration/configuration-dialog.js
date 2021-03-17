@@ -92,7 +92,6 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     },
                     cache: true
                 },
-                width: '200px',
                 dropdownAutoWidth: false,
                 formatResult: function(project) {
                     return JIRA.Templates.Plugins.JsIncluder.projectField({
@@ -159,7 +158,6 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     },
                     cache: true
                 },
-                width: '170px',
                 dropdownAutoWidth: false,
                 formatResult: function(issueType) {
                     return JIRA.Templates.Plugins.JsIncluder.issueTypeField({

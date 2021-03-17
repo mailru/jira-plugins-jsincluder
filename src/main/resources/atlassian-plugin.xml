@@ -52,6 +52,7 @@
         <dependency>com.atlassian.auiplugin:dialog2</dependency>
         <dependency>com.atlassian.auiplugin:aui-dialog2</dependency>
         <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+        <dependency>com.atlassian.auiplugin:aui-toggle</dependency>
         <dependency>ru.mail.jira.plugins.jsincluder:jsincluder-soy-templates</dependency>
 
         <resource type="download" name="configuration-page.css" location="ru/mail/jira/plugins/jsincluder/configuration/configuration-page.css" />

@@ -3,16 +3,18 @@
 /**
  * Script entries list
  * @param script script
+ * @param expandBindings expandBindings
  */
 {template .scriptEntry autoescape="false"}
     <tr id="{$script.id}" class="jsincluder-script">
         <td>
+            <aui-toggle class="jsincluder-disableScript" label="{getText('ru.mail.jira.plugins.jsincluder.configuration.script.disable')}" {if not $script.disabled}checked{/if}></aui-toggle>
             <strong class="jsincluder-script-name">{$script.name}</strong>
         </td>
         <td>
             <ul class="jsincluder-bindings">
                 {foreach $binding in $script.bindings}
-                    <li id="{$binding.id}" class="jsincluder-binding">
+                    <li id="{$binding.id}" class="jsincluder-binding {if not isFirst($binding) and $expandBindings}hidden{/if}">
                         {if $binding.project}
                             <span>
                                 <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
@@ -47,6 +49,19 @@
                         </span><br/>
                     </li>
                 {/foreach}
+                {if length($script.bindings) > 1}
+                    <ul class="operations-list">
+                        <li>
+                            <a href="#" class="jsincluder-expandBindings">
+                                {if $expandBindings}
+                                    {getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.expand')}
+                                {else}
+                                    {getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.collapse')}
+                                {/if}
+                            </a>
+                        </li>
+                    </ul>
+                {/if}
             </ul>
         </td>
         <td class="jsincluder-operations">
@@ -66,7 +81,7 @@
 */
 {template .bindingEntry}
 <tr data-id="{$binding.id}" class="jsincluder-binding-view">
-    <td class="jsincluder-binding-project">
+    <td class="jsincluder-binding-project" width="40%">
         <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
             {if $binding.project and $binding.project.avatarUrl}
                 <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
@@ -81,7 +96,7 @@
             <span class="aui-icon aui-icon-small aui-iconfont-edit"></span>
         </div>
     </td>
-    <td class="jsincluder-binding-issueTypes">
+    <td class="jsincluder-binding-issueTypes" width="20%">
         <div class="jsincluder-binding-editable-field" title="{getText('AUI.inline.edit.desc')}">
             {if $binding.issueTypes.length == 0}
                 <span><i>{getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all')}</i></span>
@@ -99,35 +114,35 @@
             <span class="aui-icon aui-icon-small aui-iconfont-edit"></span>
         </div>
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.createContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-createContextEnabled" type="checkbox" value="{$binding.createContextEnabled}">
         {else}
             <input class="checkbox jsincluder-binding-createContextEnabled" type="checkbox" value="">
         {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.viewContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox" value="{$binding.viewContextEnabled}">
         {else}
             <input class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox" value="">
         {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
             {if $binding.editContextEnabled}
                 <input checked="checked" class="checkbox jsincluder-binding-editContextEnabled" type="checkbox" value="{$binding.editContextEnabled}">
             {else}
                 <input class="checkbox jsincluder-binding-editContextEnabled" type="checkbox" value="">
             {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.transitionContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox" value="{$binding.transitionContextEnabled}">
         {else}
             <input class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox" value="">
         {/if}
     </td>
-    <td class="jsincluder-binding-operations">
+    <td class="jsincluder-binding-operations" width="20%">
         <a href="#" class="jsincluder-binding-delete">
             <span class="aui-icon aui-icon-small aui-iconfont-remove">{getText('common.words.delete')}</span>
         </a>
@@ -140,25 +155,25 @@
 */
 {template .bindingAddEntry}
 <tr id="jsincluder-add-binding-row" data-id="">
-    <td>
+    <td width="40%">
         <input type="hidden" class="select full-width-field jsincluder-binding-project"/>
     </td>
-    <td>
+    <td width="20%">
         <input type="hidden" class="select full-width-field jsincluder-binding-issueTypes"/>
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         <input type="checkbox" class="checkbox jsincluder-binding-createContextEnabled">
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
             <input type="checkbox" class="checkbox jsincluder-binding-viewContextEnabled">
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         <input type="checkbox" class="checkbox jsincluder-binding-editContextEnabled">
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         <input type="checkbox" class="checkbox jsincluder-binding-transitionContextEnabled">
     </td>
-    <td class="jsincluder-binding-operations">
+    <td class="jsincluder-binding-operations" width="20%">
         <button id="jsincluder-binding-create" class="aui-button" resolved>{getText('common.words.create')}</button>
         <button id="jsincluder-binding-create-cancel" class="aui-button aui-button-link" resolved>{getText('common.words.cancel')}</button>
     </td>
@@ -171,41 +186,41 @@
 */
 {template .bindingEditEntry}
 <tr class="jsincluder-edit-binding-row" data-id="{$binding.id}">
-    <td>
+    <td width="40%">
         <input type="hidden" class="select full-width-field jsincluder-binding-project"/>
     </td>
-    <td>
+    <td width="20%">
         <input type="hidden" class="select full-width-field jsincluder-binding-issueTypes"/>
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.createContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-createContextEnabled" type="checkbox">
         {else}
             <input class="checkbox jsincluder-binding-createContextEnabled" type="checkbox">
         {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.viewContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox">
         {else}
             <input class="checkbox jsincluder-binding-viewContextEnabled" type="checkbox">
         {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.editContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-editContextEnabled" type="checkbox">
         {else}
             <input class="checkbox jsincluder-binding-editContextEnabled" type="checkbox">
         {/if}
     </td>
-    <td class="jsincluder-binding-context">
+    <td class="jsincluder-binding-context" width="5%">
         {if $binding.transitionContextEnabled}
             <input checked="checked" class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox">
         {else}
             <input class="checkbox jsincluder-binding-transitionContextEnabled" type="checkbox">
         {/if}
     </td>
-    <td class="jsincluder-binding-operations">
+    <td class="jsincluder-binding-operations" width="20%">
         <button class="aui-button jsincluder-binding-edit-save" resolved>{getText('common.words.update')}</button>
         <button class="aui-button aui-button-link jsincluder-binding-edit-cancel" resolved>{getText('common.words.cancel')}</button>
     </td>

@@ -88,27 +88,29 @@ public class ControllerResource {
       if (!issueTypes.isEmpty() && !issueTypes.contains(issueType.getId())) continue;
 
       Script script = binding.getScript();
-      switch (context) {
-        case CREATE:
-          result.addCreateScript(new ScriptDto(script));
-          break;
-        case VIEW:
-          if (binding.isViewContextEnabled()) {
-            result.addViewScript(new ScriptDto(script));
-          }
-          if (binding.isEditContextEnabled()) {
+      if (!script.isDisabled()) {
+        switch (context) {
+          case CREATE:
+            result.addCreateScript(new ScriptDto(script));
+            break;
+          case VIEW:
+            if (binding.isViewContextEnabled()) {
+              result.addViewScript(new ScriptDto(script));
+            }
+            if (binding.isEditContextEnabled()) {
+              result.addEditScript(new ScriptDto(script));
+            }
+            if (binding.isTransitionContextEnabled()) {
+              result.addTransitionScript(new ScriptDto(script));
+            }
+            break;
+          case EDIT:
             result.addEditScript(new ScriptDto(script));
-          }
-          if (binding.isTransitionContextEnabled()) {
+            break;
+          case TRANSITION:
             result.addTransitionScript(new ScriptDto(script));
-          }
-          break;
-        case EDIT:
-          result.addEditScript(new ScriptDto(script));
-          break;
-        case TRANSITION:
-          result.addTransitionScript(new ScriptDto(script));
-          break;
+            break;
+        }
       }
     }
 

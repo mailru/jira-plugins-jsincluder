@@ -6,6 +6,10 @@ ul.jsincluder-bindings > li:not(:first-child) {
     padding-top: 15px;
 }
 
+#jsincluder-scripts .jsincluder-script-name {
+    padding-left: 10px;
+}
+
 .jsincluder-issue-types-list {
     display: inline;
     list-style-type: none;
@@ -131,14 +135,6 @@ ul.jsincluder-bindings > li:not(:first-child) {
     min-width: 126px;
     text-align: center !important;
     padding: 12px 10px !important;
-}
-
-#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-project {
-    width: 200px;
-}
-
-#jsincluder-configuration-dialog-bindings-table td.jsincluder-binding-issueTypes {
-    width: 170px;
 }
 
 ul.jsincluder-binding-issueTypes-list {
