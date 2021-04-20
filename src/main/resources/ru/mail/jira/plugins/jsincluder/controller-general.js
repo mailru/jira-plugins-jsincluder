@@ -11,8 +11,11 @@ var JS_INCLUDER = {
     _executeJs: function(scripts) {
         for (var i = 0; i < scripts.length; i++)
             try {
-                if (scripts[i].code && scripts[i].code.length)
+                if (scripts[i].code && scripts[i].code.length) {
+                    if (scripts[i].name)
+                        console.log("JsIncluder execute script:", scripts[i].name);
                     eval(scripts[i].code);
+                }
             } catch (e) {
                 console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
                 alert(e.message);
