@@ -12,8 +12,7 @@ var JS_INCLUDER = {
         for (var i = 0; i < scripts.length; i++)
             try {
                 if (scripts[i].code && scripts[i].code.length) {
-                    if (scripts[i].name)
-                        console.log("JsIncluder execute script:", scripts[i].name);
+                    console.log('[%cJsIncluder%c] execute '+scripts[i].name,'color: #bada55','color:#bec6cf');
                     eval(scripts[i].code);
                 }
             } catch (e) {
@@ -27,6 +26,7 @@ var JS_INCLUDER = {
         var css = '';
         for (var i = 0; i < scripts.length; i++) {
             if (scripts[i].css && scripts[i].css.length) {
+                console.log('[%cJsIncluder%c] apply css '+scripts[i].name,'color: #bada55','color:#bec6cf');
                 css += AJS.format('\n/* Script {0} css rules */\n', scripts[i].name);
                 css += scripts[i].css + '\n';
             }
