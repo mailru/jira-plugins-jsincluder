@@ -1,0 +1,278 @@
+openapi: 3.0.1
+info:
+  description: ""
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: JsIncluder Plugin
+  version: 2.5.0
+servers:
+- description: Plugin Endpoint URL
+  url: https://jira.mail.ru/rest/jsincluder/1.0
+paths:
+  /configuration/issuetype:
+    get:
+      deprecated: true
+      operationId: getIssueTypes
+      parameters:
+      - in: query
+        name: projectCategoryId
+        schema:
+          type: string
+      - in: query
+        name: projectId
+        schema:
+          type: string
+      - in: query
+        name: filter
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssueTypeDto'
+          description: default response
+  /configuration/project:
+    get:
+      deprecated: true
+      operationId: getProjects
+      parameters:
+      - in: query
+        name: filter
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+          description: default response
+  /configuration/script:
+    get:
+      deprecated: true
+      operationId: getScripts
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScriptDto'
+          description: default response
+    post:
+      deprecated: true
+      operationId: createScript
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ScriptDto'
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScriptDto'
+          description: default response
+  /configuration/script/{id}:
+    delete:
+      deprecated: true
+      operationId: deleteScript
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        default:
+          content:
+            application/json: {}
+          description: default response
+    get:
+      deprecated: true
+      operationId: getScript
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScriptDto'
+          description: default response
+    put:
+      deprecated: true
+      operationId: updateScript
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ScriptDto'
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScriptDto'
+          description: default response
+  /configuration/script/{scriptId}/binding:
+    get:
+      deprecated: true
+      operationId: getBindings
+      parameters:
+      - in: path
+        name: scriptId
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BindingDto'
+          description: default response
+  /configuration/script/{scriptId}/code:
+    get:
+      deprecated: true
+      operationId: getCode
+      parameters:
+      - in: path
+        name: scriptId
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: string
+          description: default response
+  /controller/getCreateScripts:
+    get:
+      operationId: getCreateScripts
+      parameters:
+      - in: query
+        name: projectId
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: issueTypeId
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json: {}
+          description: default response
+  /controller/getIssueScripts:
+    get:
+      operationId: getIssueScripts
+      parameters:
+      - in: query
+        name: issueId
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: context
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json: {}
+          description: default response
+components:
+  schemas:
+    BindingDto:
+      type: object
+      properties:
+        createContextEnabled:
+          type: boolean
+        editContextEnabled:
+          type: boolean
+        enabledContexts:
+          type: string
+        id:
+          type: string
+        issueTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssueTypeDto'
+        project:
+          $ref: '#/components/schemas/ProjectDto'
+        projectCategory:
+          $ref: '#/components/schemas/ProjectCategoryDto'
+        transitionContextEnabled:
+          type: boolean
+        viewContextEnabled:
+          type: boolean
+    IssueTypeDto:
+      type: object
+      properties:
+        iconUrl:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+    ProjectCategoryDto:
+      type: object
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    ProjectDto:
+      type: object
+      properties:
+        avatarUrl:
+          type: string
+        id:
+          type: integer
+          format: int64
+        key:
+          type: string
+        name:
+          type: string
+    ScriptDto:
+      type: object
+      properties:
+        bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/BindingDto'
+        code:
+          type: string
+        css:
+          type: string
+        disabled:
+          type: boolean
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string

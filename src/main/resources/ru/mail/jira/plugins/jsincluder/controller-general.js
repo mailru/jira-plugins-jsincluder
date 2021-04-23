@@ -120,7 +120,7 @@ require(['jquery', 'wrm/context-path', 'jira/util/formatter', 'jira/util/events'
 
             Events.bind(EventsTypes.NEW_CONTENT_ADDED, function(e, $context, reason) {
                 if (reason === EventsReasons.dialogReady) {
-                    if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length || $context.parent('#prefillable-create-issue-dialog').length)
+                    if ($context.parent('#create-issue-dialog').length || $context.parent('#create-subtask-dialog').length || $context.parent('#prefillable-create-issue-dialog').length || $context.parent('#create-linked-issue-dialog').length)
                         JS_INCLUDER.executeCreateScripts($context.find('#project').val(), $context.find('#issuetype').val(), $context);
 
                     if ($context.children('#issue-workflow-transition').length)
