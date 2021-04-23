@@ -16,4 +16,11 @@
     <name>Mail.ru Plugin: JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com:mailru/jira-plugins-jsincluder.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:mailru/jira-plugins-jsincluder.git</developerConnection>
+        <url>https://github.com/mailru/jira-plugins-jsincluder</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
