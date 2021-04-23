@@ -20,11 +20,9 @@ import com.atlassian.sal.api.websudo.WebSudoRequired;
 import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.commons.RestFieldException;
-import ru.mail.jira.plugins.commons.RestUtils;
 import ru.mail.jira.plugins.jsincluder.*;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditChangedValue;
 import ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditService;
@@ -131,7 +129,7 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
   @GET
   @Path("/script")
   @WebSudoNotRequired
-  public Response getScripts() {
+  public List<ScriptDto> getScripts() {
 
     if (!isUserAllowed()) throw new SecurityException();
 
@@ -141,26 +139,26 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
       scriptDto.setBindings(buildBindingDtos(script.getID()));
       result.add(scriptDto);
     }
-    return RestUtils.success(result);
+    return result;
   }
 
   @GET
   @Path("/script/{id}")
   @WebSudoNotRequired
-  public Response getScript(@PathParam("id") final int id) {
+  public ScriptDto getScript(@PathParam("id") final int id) {
 
     if (!isUserAllowed()) throw new SecurityException();
 
     Script script = scriptManager.getScript(id);
     ScriptDto scriptDto = new ScriptDto(script);
     scriptDto.setBindings(buildBindingDtos(script.getID()));
-    return RestUtils.success(scriptDto);
+    return scriptDto;
   }
 
   @POST
   @Path("/script/")
   @WebSudoNotRequired
-  public Response createScript(final ScriptDto scriptDto) {
+  public ScriptDto createScript(final ScriptDto scriptDto) {
 
     if (!isUserAllowed()) throw new SecurityException();
     checkRequireFields(
@@ -191,13 +189,13 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
 
     ScriptDto scriptDtoNew = new ScriptDto(script);
     scriptDtoNew.setBindings(buildBindingDtos(script.getID()));
-    return RestUtils.success(scriptDtoNew);
+    return scriptDtoNew;
   }
 
   @PUT
   @Path("/script/{id}")
   @WebSudoNotRequired
-  public Response updateScript(final ScriptDto scriptDto) {
+  public ScriptDto updateScript(final ScriptDto scriptDto) {
     if (!isUserAllowed()) throw new SecurityException();
     checkRequireFields(
         scriptDto.getName(), scriptDto.getCode(), scriptDto.getCss(), scriptDto.getBindings());
@@ -263,43 +261,41 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
     jsincluderAuditService.adminEditScript(oldValue, newValue);
 
     scriptDto.setBindings(buildBindingDtos(script.getID()));
-    return RestUtils.success(scriptDto);
+    return scriptDto;
   }
 
   @DELETE
   @Path("/script/{id}")
   @WebSudoNotRequired
-  public Response deleteScript(@PathParam("id") final int id) {
+  public void deleteScript(@PathParam("id") final int id) {
     if (!isUserAllowed()) throw new SecurityException();
     JsincluderAuditChangedValue oldValue =
         JsincluderAuditChangedValue.create(
             scriptManager.getScript(id), i18nHelper, issueTypeManager, projectManager);
     scriptManager.deleteScript(id);
     jsincluderAuditService.adminDeleteScript(oldValue);
-    return RestUtils.success(null);
   }
 
   @GET
   @Path("/script/{scriptId}/binding")
   @WebSudoNotRequired
-  public Response getBindings(@PathParam("scriptId") final String scriptId) {
+  public List<BindingDto> getBindings(@PathParam("scriptId") final String scriptId) {
     if (!isUserAllowed()) throw new SecurityException();
 
-    return RestUtils.success(
-        buildBindingDtos(scriptManager.getScript(Integer.parseInt(scriptId)).getID()));
+    return buildBindingDtos(scriptManager.getScript(Integer.parseInt(scriptId)).getID());
   }
 
   @GET
   @Path("/script/{scriptId}/code")
   @WebSudoNotRequired
-  public Response getCode(@PathParam("scriptId") final String scriptId) {
-    return RestUtils.success(scriptManager.getScript(Integer.parseInt(scriptId)).getCode());
+  public String getCode(@PathParam("scriptId") final String scriptId) {
+    return scriptManager.getScript(Integer.parseInt(scriptId)).getCode();
   }
 
   @GET
   @Path("/project")
   @WebSudoNotRequired
-  public Response getProjects(@QueryParam("filter") final String filter) {
+  public HashMap<String, Object> getProjects(@QueryParam("filter") final String filter) {
     List<ProjectDto> projectsDtos = new ArrayList<ProjectDto>();
     ApplicationUser user = getLoggedInUser();
 
@@ -347,19 +343,18 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
                     String.format(
                         "projectavatar?pid=%d&avatarId=%d&size=xxmall",
                         project.getId(), project.getAvatar().getId())));
-    return RestUtils.success(
-        new HashMap<String, Object>() {
-          {
-            put("projects", projectsDtos);
-            put("categories", allProjectCategoryDtos.values());
-          }
-        });
+    return new HashMap<String, Object>() {
+      {
+        put("projects", projectsDtos);
+        put("categories", allProjectCategoryDtos.values());
+      }
+    };
   }
 
   @GET
   @Path("/issuetype")
   @WebSudoNotRequired
-  public Response getIssueTypes(
+  public List<IssueTypeDto> getIssueTypes(
       @QueryParam("projectCategoryId") final String projectCategoryId,
       @QueryParam("projectId") final String projectId,
       @QueryParam("filter") final String filter) {
@@ -397,6 +392,6 @@ public class JsIncluderScriptsConfigurationAction extends JiraWebActionSupport {
             result.add(
                 new IssueTypeDto(
                     issueType.getId(), issueType.getName(), baseUrl + issueType.getIconUrl()));
-    return RestUtils.success(result);
+    return result;
   }
 }
