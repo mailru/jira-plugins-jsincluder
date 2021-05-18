@@ -1,5 +1,6 @@
 Class ProjectDto
 ================
+ru.mail.jira.plugins.jsincluder.ProjectDto
 Summary
 -------
 #### Constructors

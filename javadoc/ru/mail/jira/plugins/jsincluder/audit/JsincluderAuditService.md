@@ -1,13 +1,14 @@
 Interface JsincluderAuditService
 ================================
+ru.mail.jira.plugins.jsincluder.audit.JsincluderAuditService
 Summary
 -------
 #### Methods
-| Type and modifiers | Method signature                                                          |
-| ------------------ | ------------------------------------------------------------------------- |
-| **public**         | adminCreateScript(JsincluderAuditChangedValue)                            |
-| **public**         | adminEditScript(JsincluderAuditChangedValue, JsincluderAuditChangedValue) |
-| **public**         | adminDeleteScript(JsincluderAuditChangedValue)                            |
+| Type and modifiers | Method signature                                                                           | Return type |
+| ------------------ | ------------------------------------------------------------------------------------------ | ----------- |
+| **public**         | adminCreateScript(JsincluderAuditChangedValue newValue)                                    | void        |
+| **public**         | adminEditScript(JsincluderAuditChangedValue oldValue,JsincluderAuditChangedValue newValue) | void        |
+| **public**         | adminDeleteScript(JsincluderAuditChangedValue oldValue)                                    | void        |
 
 Methods
 =======

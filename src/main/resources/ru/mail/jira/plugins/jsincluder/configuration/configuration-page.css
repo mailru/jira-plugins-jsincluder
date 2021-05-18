@@ -84,6 +84,11 @@ ul.jsincluder-bindings > li:not(:first-child) {
     display: inline-block;
 }
 
+.CodeMirror {
+    resize: vertical;
+    overflow: auto !important;
+}
+
 .jsincluder-configuration-dialog-error-field {
     border-color: red !important;
 }
