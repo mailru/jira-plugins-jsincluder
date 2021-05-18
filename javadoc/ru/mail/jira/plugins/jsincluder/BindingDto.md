@@ -1,5 +1,6 @@
 Class BindingDto
 ================
+ru.mail.jira.plugins.jsincluder.BindingDto
 Summary
 -------
 #### Constructors

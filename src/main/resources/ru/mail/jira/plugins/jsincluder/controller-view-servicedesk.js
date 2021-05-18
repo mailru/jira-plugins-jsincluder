@@ -3,7 +3,7 @@ require(['jquery'], function($) {
         var jsdAttempt=0;
 
         function onFunctionAvailable(issue) {
-            if(jsdAttempt++ > 15){
+            if(jsdAttempt++ > 30){
                 console.error("JSD page not full load. JSIncluder scripts will not load.");
                 return;
             }

@@ -1,5 +1,6 @@
 Class ProjectCategoryDto
 ========================
+ru.mail.jira.plugins.jsincluder.ProjectCategoryDto
 Summary
 -------
 #### Constructors

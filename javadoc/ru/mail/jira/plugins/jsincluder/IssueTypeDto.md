@@ -1,5 +1,6 @@
 Class IssueTypeDto
 ==================
+ru.mail.jira.plugins.jsincluder.IssueTypeDto
 Summary
 -------
 #### Constructors

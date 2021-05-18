@@ -1,5 +1,6 @@
 Class ScriptDto
 ===============
+ru.mail.jira.plugins.jsincluder.ScriptDto
 Summary
 -------
 #### Constructors
@@ -8,7 +9,7 @@ Summary
 | **public** | ScriptDto()       |
 | **public** | ScriptDto(Script) |
 #### Methods
-| Type and modifiers | Method signature || ------------------ | ---------------- |
+| Type and modifiers | Method signature | Return type || ------------------ | ---------------- | ----------- |
 
 
 Constructors
