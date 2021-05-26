@@ -17,7 +17,6 @@ var JS_INCLUDER = {
                 }
             } catch (e) {
                 console.error(AJS.format('Script: {0} \n Error: {1}', scripts[i].name, e.message));
-                alert(e.message);
             }
     },
 

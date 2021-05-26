@@ -115,7 +115,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 },
                 type: 'GET',
                 error: $.proxy(function(xhr) {
-                    alert(xhr.responseText || 'Internal error');
+                    console.error("JsIncluder", xhr.responseText || 'Internal error');
                 }, this),
                 success: function(data) {
                     var $issueTypeField = $('.jsincluder-binding-issueTypes');
