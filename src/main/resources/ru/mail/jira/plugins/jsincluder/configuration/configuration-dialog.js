@@ -1,7 +1,6 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editorJS;
     var editorCSS;
-    var widgets = [];
 
     var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
     return Backbone.View.extend({
@@ -322,22 +321,19 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         _initCodeFieldInput: function($codeFieldInputContainer) {
             if (!$codeFieldInputContainer.hasClass('hidden') && !$codeFieldInputContainer.find('div.CodeMirror').length) {
                 var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
-                var waiting;
                 var _updateHints = this._updateHints.bind(this);
                 if ($codeFieldInputContainer.hasClass('css-field')) {
                     editorCSS = this._initCodeMirrorEditor(textarea, 'css');
                     editorCSS.on("change", function() {
-                        clearTimeout(waiting);
-                        waiting = setTimeout(_updateHints, 500);
+                        _.debounce(_updateHints,500)();
                     });
                 } else {
                     editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
                     editorJS.on("change", function() {
-                        clearTimeout(waiting);
-                        waiting = setTimeout(_updateHints, 500);
+                        _.debounce(_updateHints,500)();
                     });
                 }
-                setTimeout(_updateHints, 100);
+                _.debounce(_updateHints,100)();
             }
         },
         _toggleCodeField: function(e) {
@@ -459,62 +455,49 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
 
         _updateHints: function () {
             var $okButton = this.$okButton;
-            editorJS.operation(function () {
-                var i = 0;
-                for (i = 0; i < widgets.length; ++i)
-                    editorJS.removeLineWidget(widgets[i]);
-                widgets.length = 0;
-
-                JSHINT(editorJS.getValue());
-                var tooltipError = {
-                    hasError: false,
-                    text: ""
-                };
-
-                for (i = 0; i < JSHINT.errors.length; ++i) {
-                    var err = JSHINT.errors[i];
-                    if (!err) continue;
-                    var msg = document.createElement("div");
-                    var icon = msg.appendChild(document.createElement("span"));
-                    icon.innerHTML = "!!";
-                    icon.className = "lint-error-icon";
-                    msg.appendChild(document.createTextNode(err.reason));
-                    msg.className = "lint-error";
-                    msg.hidden = true;
-                    widgets.push(editorJS.addLineWidget(err.line - 1, msg, {coverGutter: false, noHScroll: true}));
-
-                    if (typeof err.code === 'string' && err.code.includes('E')) {
-                        tooltipError.hasError = true;
-                        tooltipError.text = "JS: Line: " + err.line + " Column: " + err.character+ " " + err.reason + "\n";
+            var i = 0;
+            var tooltipError = {
+                hasError: false,
+                text: ""
+            };
+            if (editorJS) {
+                editorJS.operation(function () {
+                    JSHINT(editorJS.getValue());
+                    for (i = 0; i < JSHINT.errors.length; ++i) {
+                        var err = JSHINT.errors[i];
+                        if (!err) continue;
+                        if (typeof err.code === 'string' && err.code.includes('E')) {
+                            tooltipError.hasError = true;
+                            tooltipError.text = "JS: Line: " + err.line + " Column: " + err.character + " " + err.reason + "\n";
+                            break;
+                        }
                     }
-                }
-                if(editorCSS) {
+                });
+            }
+            if(editorCSS) {
+                editorCSS.operation(function () {
                     var cssRules = CSSLint.verify(editorCSS.getValue());
-                    if(cssRules && cssRules.messages) {
-                        for(i = 0; i < cssRules.messages.length; i++) {
-                            if(cssRules.messages[i].type === "error"){
+                    if (cssRules && cssRules.messages) {
+                        for (i = 0; i < cssRules.messages.length; i++) {
+                            if (cssRules.messages[i].type === "error") {
                                 tooltipError.hasError = true;
-                                tooltipError.text += "CSS: "+cssRules.messages[i].message;
+                                tooltipError.text += "CSS: " + cssRules.messages[i].message;
+                                break;
                             }
                         }
                     }
-                }
-
-                if (tooltipError.hasError) {
-                    $okButton.attr('disabled', 'disabled');
-                    var submitTooltip = $("#submit-tooltip");
-                    submitTooltip.attr('title', tooltipError.text);
-                    submitTooltip.show();
-                } else {
-                    tooltipError.text="";
-                    $okButton.removeAttr('disabled');
-                    $("#submit-tooltip").hide();
-                }
-                var info = editorJS.getScrollInfo();
-                var after = editorJS.charCoords({line: editorJS.getCursor().line + 1, ch: 0}, "local").top;
-                if (info.top + info.clientHeight < after)
-                    editorJS.scrollTo(null, after - info.clientHeight + 3);
-            });
+                });
+            }
+            if (tooltipError.hasError) {
+                $okButton.attr('disabled', 'disabled');
+                var submitTooltip = $("#submit-tooltip");
+                submitTooltip.attr('title', tooltipError.text);
+                submitTooltip.show();
+            } else {
+                tooltipError.text="";
+                $okButton.removeAttr('disabled');
+                $("#submit-tooltip").hide();
+            }
         }
     });
 });
