@@ -1,6 +1,7 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editorJS;
     var editorCSS;
+    var updateHints;
 
     var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
     return Backbone.View.extend({
@@ -26,7 +27,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this.$okButton = this.$('#jsincluder-configuration-dialog-ok');
             this.$cancelButton = this.$('#jsincluder-configuration-dialog-cancel');
             this.scripts = options.scripts;
-
+            updateHints = _.debounce(this._updateHints.bind(this),500);
             this._fillForm();
 
             this.dialog.on('hide', $.proxy(this.destroy, this));
@@ -321,19 +322,14 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         _initCodeFieldInput: function($codeFieldInputContainer) {
             if (!$codeFieldInputContainer.hasClass('hidden') && !$codeFieldInputContainer.find('div.CodeMirror').length) {
                 var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
-                var _updateHints = this._updateHints.bind(this);
                 if ($codeFieldInputContainer.hasClass('css-field')) {
                     editorCSS = this._initCodeMirrorEditor(textarea, 'css');
-                    editorCSS.on("change", function() {
-                        _.debounce(_updateHints,500)();
-                    });
+                    editorCSS.on("change", updateHints);
                 } else {
                     editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
-                    editorJS.on("change", function() {
-                        _.debounce(_updateHints,500)();
-                    });
+                    editorJS.on("change", updateHints);
                 }
-                _.debounce(_updateHints,100)();
+                updateHints();
             }
         },
         _toggleCodeField: function(e) {
