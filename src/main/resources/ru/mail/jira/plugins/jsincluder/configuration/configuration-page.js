@@ -78,12 +78,12 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                                 configurationDialogView.show();
                             }, this),
                             error: function(request) {
-                                alert(request.responseText);
+                                console.error("JsIncluder", request.responseText);
                             }
                         });
                     },
                     error: function(request) {
-                        alert(request.responseText);
+                        console.error("JsIncluder", request.responseText);
                     }
                 });
             },
@@ -100,7 +100,7 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                             url: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/script/' + script.id,
                             type: 'DELETE',
                             error: $.proxy(function(xhr) {
-                                alert(xhr.responseText || 'Internal error');
+                                console.error("JsIncluder", xhr.responseText || 'Internal error');
                             }, this),
                             success: $.proxy(function() {
                                 this.collection.remove(script);
