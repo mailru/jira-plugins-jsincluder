@@ -1,7 +1,6 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editorJS;
     var editorCSS;
-    var updateHints;
 
     var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
     return Backbone.View.extend({
@@ -27,7 +26,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this.$okButton = this.$('#jsincluder-configuration-dialog-ok');
             this.$cancelButton = this.$('#jsincluder-configuration-dialog-cancel');
             this.scripts = options.scripts;
-            updateHints = _.debounce(this._updateHints.bind(this),500);
+            this.updateHints = _.debounce(this._updateHints.bind(this),100);
             this._fillForm();
 
             this.dialog.on('hide', $.proxy(this.destroy, this));
@@ -324,12 +323,12 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
                 if ($codeFieldInputContainer.hasClass('css-field')) {
                     editorCSS = this._initCodeMirrorEditor(textarea, 'css');
-                    editorCSS.on("change", updateHints);
+                    editorCSS.on("change", this.updateHints);
                 } else {
                     editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
-                    editorJS.on("change", updateHints);
+                    editorJS.on("change", this.updateHints);
                 }
-                updateHints();
+                this.updateHints();
             }
         },
         _toggleCodeField: function(e) {
@@ -450,7 +449,6 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         },
 
         _updateHints: function () {
-            var $okButton = this.$okButton;
             var i = 0;
             var tooltipError = {
                 hasError: false,
@@ -485,13 +483,13 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 });
             }
             if (tooltipError.hasError) {
-                $okButton.attr('disabled', 'disabled');
+                this.$okButton.attr('disabled', 'disabled');
                 var submitTooltip = $("#submit-tooltip");
                 submitTooltip.attr('title', tooltipError.text);
                 submitTooltip.show();
             } else {
                 tooltipError.text="";
-                $okButton.removeAttr('disabled');
+                this.$okButton.removeAttr('disabled');
                 $("#submit-tooltip").hide();
             }
         }
