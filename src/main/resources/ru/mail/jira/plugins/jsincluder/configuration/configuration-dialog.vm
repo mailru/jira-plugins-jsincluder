@@ -91,6 +91,7 @@
     </div>
     <footer class="aui-dialog2-footer" style="width: 100%">
         <div class="aui-dialog2-footer-actions">
+            <span class="aui-icon aui-icon-small aui-icon-wait aui-iconfont-error js-includer-error" id="submit-tooltip"></span>
             <button id="jsincluder-configuration-dialog-ok" class="aui-button aui-button-primary"></button>
             <button id="jsincluder-configuration-dialog-cancel" class="aui-button aui-button-link">$i18n.getText( "common.words.cancel" )</button>
         </div>

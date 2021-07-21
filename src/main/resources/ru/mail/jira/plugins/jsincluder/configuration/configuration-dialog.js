@@ -1,6 +1,7 @@
 define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var editorJS;
     var editorCSS;
+
     var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
     return Backbone.View.extend({
         el: '#jsincluder-configuration-dialog',
@@ -25,7 +26,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             this.$okButton = this.$('#jsincluder-configuration-dialog-ok');
             this.$cancelButton = this.$('#jsincluder-configuration-dialog-cancel');
             this.scripts = options.scripts;
-
+            this.updateHints = _.debounce(this._updateHints.bind(this),100);
             this._fillForm();
 
             this.dialog.on('hide', $.proxy(this.destroy, this));
@@ -67,7 +68,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     results: function(data) {
                         results = [{
                             name: "Projects",
-                            children: [allProjects]  
+                            children: [allProjects]
                         }];
 
                         if (data.projects) {
@@ -246,7 +247,7 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                     res.projectCategory = null;
                     delete res.project.type;
                     break;
-            
+
                 case "category":
                     res.projectCategory = {...target};
                     res.project = null;
@@ -309,6 +310,8 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             return CodeMirror.fromTextArea(textarea, {
                 autofocus: true,
                 lineNumbers: true,
+                lint: true,
+                gutters: ["CodeMirror-lint-markers"],
                 mode: mode,
                 matchBrackets: true,
                 indentWithTabs: true,
@@ -320,9 +323,12 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
                 if ($codeFieldInputContainer.hasClass('css-field')) {
                     editorCSS = this._initCodeMirrorEditor(textarea, 'css');
+                    editorCSS.on("change", this.updateHints);
                 } else {
                     editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
+                    editorJS.on("change", this.updateHints);
                 }
+                this.updateHints();
             }
         },
         _toggleCodeField: function(e) {
@@ -440,6 +446,52 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
             binding.set('editContextEnabled', editContextEnabled);
             binding.set('viewContextEnabled', viewContextEnabled);
             binding.set('transitionContextEnabled', transitionContextEnabled);
+        },
+
+        _updateHints: function () {
+            var i = 0;
+            var tooltipError = {
+                hasError: false,
+                text: ""
+            };
+            if (editorJS) {
+                editorJS.operation(function () {
+                    JSHINT(editorJS.getValue());
+                    for (i = 0; i < JSHINT.errors.length; ++i) {
+                        var err = JSHINT.errors[i];
+                        if (!err) continue;
+                        if (typeof err.code === 'string' && err.code.includes('E')) {
+                            tooltipError.hasError = true;
+                            tooltipError.text = "JS: Line: " + err.line + " Column: " + err.character + " " + err.reason + "\n";
+                            break;
+                        }
+                    }
+                });
+            }
+            if(editorCSS) {
+                editorCSS.operation(function () {
+                    var cssRules = CSSLint.verify(editorCSS.getValue());
+                    if (cssRules && cssRules.messages) {
+                        for (i = 0; i < cssRules.messages.length; i++) {
+                            if (cssRules.messages[i].type === "error") {
+                                tooltipError.hasError = true;
+                                tooltipError.text += "CSS: " + cssRules.messages[i].message;
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+            if (tooltipError.hasError) {
+                this.$okButton.attr('disabled', 'disabled');
+                var submitTooltip = $("#submit-tooltip");
+                submitTooltip.attr('title', tooltipError.text);
+                submitTooltip.show();
+            } else {
+                tooltipError.text="";
+                this.$okButton.removeAttr('disabled');
+                $("#submit-tooltip").hide();
+            }
         }
     });
 });

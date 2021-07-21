@@ -66,6 +66,12 @@
         <resource type="download" name="codemirror-mode-css.js" location="ru/mail/jira/plugins/jsincluder/codemirror/codemirror-mode-css.js" />
         <resource type="download" name="codemirror-mode-htmlmixed.js" location="ru/mail/jira/plugins/jsincluder/codemirror/codemirror-mode-htmlmixed.js" />
         <resource type="download" name="codemirror-mode-javascript.js" location="ru/mail/jira/plugins/jsincluder/codemirror/codemirror-mode-javascript.js" />
+        <resource type="download" name="jshint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/jshint.js" />
+        <resource type="download" name="csslint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/csslint.js" />
+        <resource type="download" name="css-lint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/css-lint.js" />
+        <resource type="download" name="javascript-lint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/javascript-lint.js" />
+        <resource type="download" name="lint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/lint.js" />
+        <resource type="download" name="lint.css" location="ru/mail/jira/plugins/jsincluder/codemirror/lint.css" />
     </web-resource>
 
     <webwork1 key="configuration-action" class="java.lang.Object" roles-required="admin">
