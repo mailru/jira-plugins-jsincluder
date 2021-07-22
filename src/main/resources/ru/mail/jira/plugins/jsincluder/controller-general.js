@@ -138,6 +138,14 @@ require(['jquery', 'wrm/context-path', 'jira/util/formatter', 'jira/util/events'
                     JS_INCLUDER.removeCssScripts(JS_INCLUDER.CONTEXT_TRANSITION);
                 }
             });
+
+            Events.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, $context, reason) {
+                jQuery("#issuetype-field").on("change", function () {
+                    const issueId = JIRA.Issue.getIssueId();
+                    JS_INCLUDER._cache[issueId] = null;
+                });
+            });
+            
         });
 
         return JS_INCLUDER;
