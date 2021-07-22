@@ -5,7 +5,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: JsIncluder Plugin
-  version: 2.5.2-SNAPSHOT
+  version: 2.5.3-SNAPSHOT
 servers:
 - description: Plugin Endpoint URL
   url: https://jira.mail.ru/rest/jsincluder/1.0
