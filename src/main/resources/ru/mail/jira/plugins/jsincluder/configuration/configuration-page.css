@@ -74,6 +74,55 @@ ul.jsincluder-bindings > li:not(:first-child) {
 .jsincluder-configuration-dialog-code-item-name {
     padding: 10px 10px 10px 5px;
     border-bottom: 1px solid #ccc;
+    display: grid;
+    grid-template-columns: 16fr 1fr;
+}
+
+.jsincluder-configuration-dialog-code-item-right-part {
+    text-align: right;
+}
+
+.CodeMirror-fullscreen {
+    position: fixed !important;
+    top: 41px; left: 0; right: 0; bottom: 41px;
+    height: auto;
+    z-index: 3001;
+}
+
+.CodeMirror-fullscreen-top {
+    text-align: right;
+    position: fixed;
+    top:0; left:0;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #ddd;
+    z-index: 3000;
+    background: white;
+}
+.CodeMirror-fullscreen-top .aui-iconfont-vid-full-screen-off {
+    padding: 12px;
+}
+.CodeMirror-fullscreen-bottom-text {
+    padding: 10px;
+}
+
+.CodeMirror-fullscreen-bottom {
+    display: flex;
+    position: fixed;
+    bottom:0; left:0;
+    width: 100%;
+    height: 40px;
+    border-top: 1px solid #ddd;
+    z-index: 3000;
+    background: white;
+}
+
+.CodeMirror-fullscreen-bottom .aui-icon{
+    padding:12px;
+}
+
+.zoomedEditor .CodeMirror{
+    height: 100%;
 }
 
 .jsincluder-configuration-dialog-code-item-name.expanded {
@@ -173,3 +222,10 @@ ul.jsincluder-binding-issueTypes-list .icon {
 a.jsincluder-binding-delete:link {
     color: #707070;
 }
+
+.jsincluder-filters {
+    display: grid;
+    grid-template-columns: repeat(4, 0fr);
+    gap: 5px;
+}
+

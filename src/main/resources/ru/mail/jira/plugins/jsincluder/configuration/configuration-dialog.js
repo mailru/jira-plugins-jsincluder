@@ -318,17 +318,68 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 tabMode: "shift"
             });
         },
+        _zoomDialog: function($zoomedEditorWrapper, codemirrorEditor) {
+            if($zoomedEditorWrapper && codemirrorEditor) {
+                var body = $('body');
+                var CodeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
+                var CodeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom');
+                if(CodeMirrorFullscreenTop.length === 0) {
+                    body.append('<div class="CodeMirror-fullscreen-top"><span class="aui-icon aui-icon-small aui-iconfont-vid-full-screen-off"></span></div>');
+                    CodeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
+                }
+                if(CodeMirrorFullscreenBottom.length === 0) {
+                    body.append('<div class="CodeMirror-fullscreen-bottom"></div>');
+                    CodeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom')
+                }
+
+
+                $zoomedEditorWrapper.after('<div id="zoomedEditorAnchor"></div>');
+                $zoomedEditorWrapper.attr('id', 'zoomedEditorAnchorEditor');
+                body.append($zoomedEditorWrapper);
+                CodeMirrorFullscreenTop.show();
+
+                $(".CodeMirror-fullscreen-bottom").show();
+                codemirrorEditor.setOption("fullScreen", true);
+
+                CodeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").off("click");
+                CodeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").on("click", function () {
+                    var zoomedEditorAnchor = $("#zoomedEditorAnchor");
+                    if (zoomedEditorAnchor.length > 0) {
+                        codemirrorEditor.setOption("fullScreen", false);
+                        var zoomedEditorAnchorEditor = $("#zoomedEditorAnchorEditor");
+                        zoomedEditorAnchorEditor.removeAttr('id');
+                        zoomedEditorAnchor.replaceWith(zoomedEditorAnchorEditor);
+                        CodeMirrorFullscreenTop.hide();
+                        CodeMirrorFullscreenBottom.hide();
+                        $(codemirrorEditor.getWrapperElement()).css("resize", "vertical");
+                    }
+                });
+                $(codemirrorEditor.getWrapperElement()).css("resize", "none");
+            }
+        },
         _initCodeFieldInput: function($codeFieldInputContainer) {
             if (!$codeFieldInputContainer.hasClass('hidden') && !$codeFieldInputContainer.find('div.CodeMirror').length) {
                 var textarea = $codeFieldInputContainer.find('.jsincluder-configuration-dialog-code').get(0);
                 if ($codeFieldInputContainer.hasClass('css-field')) {
                     editorCSS = this._initCodeMirrorEditor(textarea, 'css');
                     editorCSS.on("change", this.updateHints);
+                    $codeFieldInputContainer.parent().find(".zoom-button").on("click", {zoomDialog:this._zoomDialog}, function (event) {
+                        event.data.zoomDialog($(event.target).parents(".jsincluder-configuration-dialog-code-item"),editorCSS);
+                    });
                 } else {
                     editorJS = this._initCodeMirrorEditor(textarea, 'javascript');
                     editorJS.on("change", this.updateHints);
+                    $codeFieldInputContainer.parent().find(".zoom-button").on("click", {zoomDialog:this._zoomDialog}, function (event) {
+                        event.data.zoomDialog($(event.target).parents(".jsincluder-configuration-dialog-code-item"),editorJS);
+                    });
                 }
                 this.updateHints();
+            } else {
+                if ($codeFieldInputContainer.hasClass('css-field')) {
+                    $codeFieldInputContainer.parent().find("#error-tooltip-css").hide();
+                } else {
+                    $codeFieldInputContainer.parent().find("#error-tooltip-js").hide();
+                }
             }
         },
         _toggleCodeField: function(e) {
@@ -339,8 +390,9 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
 
             var isCodeFieldHidden = $codeFieldInputContainer.hasClass('hidden');
             $codeFieldNameContainer.toggleClass('expanded', isCodeFieldHidden);
-            $codeFieldNameContainer.find('.aui-icon').toggleClass('aui-iconfont-chevron-right', !isCodeFieldHidden).toggleClass('aui-iconfont-chevron-down', isCodeFieldHidden);
+            $codeFieldNameContainer.find(".jsincluder-configuration-dialog-code-item-left-part>.aui-icon").toggleClass('aui-iconfont-chevron-right', !isCodeFieldHidden).toggleClass('aui-iconfont-chevron-down', isCodeFieldHidden);
             $codeFieldInputContainer.toggleClass('hidden', !isCodeFieldHidden);
+            $codeField.find(".zoom-button").toggleClass('hidden', !isCodeFieldHidden);
             this._initCodeFieldInput($codeFieldInputContainer);
         },
         _selectBindingsTab: function(e) {
@@ -451,19 +503,38 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         _updateHints: function () {
             var i = 0;
             var tooltipError = {
-                hasError: false,
-                text: ""
+                hasCssError: false,
+                hasJsError:false,
+                jsErrorText: "",
+                cssErrorText: ""
             };
             if (editorJS) {
                 editorJS.operation(function () {
                     JSHINT(editorJS.getValue());
+                    var jsTooltip = $("#error-tooltip-js");
                     for (i = 0; i < JSHINT.errors.length; ++i) {
                         var err = JSHINT.errors[i];
                         if (!err) continue;
                         if (typeof err.code === 'string' && err.code.includes('E')) {
-                            tooltipError.hasError = true;
-                            tooltipError.text = "JS: Line: " + err.line + " Column: " + err.character + " " + err.reason + "\n";
+                            tooltipError.hasJsError = true;
+                            tooltipError.jsErrorText = "JS: Line: " + err.line + " Column: " + err.character + " " + err.reason + "\n";
+                            jsTooltip.attr('title', tooltipError.jsErrorText);
+                            jsTooltip.show();
                             break;
+                        }
+                    }
+                    if(!tooltipError.hasJsError){
+                        jsTooltip.hide();
+                    }
+                    if(editorJS.getOption("fullScreen")) {
+                        var codeMirrorFullscreenBottom = $(".CodeMirror-fullscreen-bottom");
+                        codeMirrorFullscreenBottom.html('<span class="aui-icon aui-icon-small aui-icon-wait aui-iconfont-error js-includer-error CodeMirror-fullscreen-bottom-text"></span><span class="CodeMirror-fullscreen-bottom-text"></span>');
+                        if(tooltipError.hasJsError) {
+                            codeMirrorFullscreenBottom = codeMirrorFullscreenBottom.find(".CodeMirror-fullscreen-bottom-text");
+                            codeMirrorFullscreenBottom.text(tooltipError.jsErrorText);
+                            codeMirrorFullscreenBottom.attr('title', tooltipError.jsErrorText);
+                        } else {
+                            codeMirrorFullscreenBottom.text("");
                         }
                     }
                 });
@@ -472,23 +543,41 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
                 editorCSS.operation(function () {
                     var cssRules = CSSLint.verify(editorCSS.getValue());
                     if (cssRules && cssRules.messages) {
+                        var cssTooltip = $("#error-tooltip-css");
                         for (i = 0; i < cssRules.messages.length; i++) {
                             if (cssRules.messages[i].type === "error") {
-                                tooltipError.hasError = true;
-                                tooltipError.text += "CSS: " + cssRules.messages[i].message;
+                                tooltipError.hasCssError = true;
+                                tooltipError.cssErrorText = "CSS: " + cssRules.messages[i].message + "\n";
+                                cssTooltip.attr('title', tooltipError.cssErrorText);
+                                cssTooltip.show();
                                 break;
+                            }
+                        }
+                        if(!tooltipError.hasCssError) {
+                            cssTooltip.hide();
+                        }
+                        if(editorCSS.getOption("fullScreen")) {
+                            var codeMirrorFullscreenBottom = $(".CodeMirror-fullscreen-bottom");
+                            codeMirrorFullscreenBottom.html('<span class="aui-icon aui-icon-small aui-icon-wait aui-iconfont-error js-includer-error CodeMirror-fullscreen-bottom-text"></span><span class="CodeMirror-fullscreen-bottom-text"></span>');
+                            if(tooltipError.hasCssError) {
+                                codeMirrorFullscreenBottom = codeMirrorFullscreenBottom.find(".CodeMirror-fullscreen-bottom-text");
+                                codeMirrorFullscreenBottom.text(tooltipError.cssErrorText);
+                                codeMirrorFullscreenBottom.attr('title', tooltipError.cssErrorText);
+                            } else {
+                                codeMirrorFullscreenBottom.text("");
                             }
                         }
                     }
                 });
             }
-            if (tooltipError.hasError) {
+            if (tooltipError.hasCssError || tooltipError.hasJsError) {
                 this.$okButton.attr('disabled', 'disabled');
                 var submitTooltip = $("#submit-tooltip");
-                submitTooltip.attr('title', tooltipError.text);
+                submitTooltip.attr('title', tooltipError.jsErrorText + tooltipError.cssErrorText);
                 submitTooltip.show();
             } else {
-                tooltipError.text="";
+                tooltipError.cssErrorText="";
+                tooltipError.jsErrorText="";
                 this.$okButton.removeAttr('disabled');
                 $("#submit-tooltip").hide();
             }

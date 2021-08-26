@@ -72,6 +72,7 @@
         <resource type="download" name="javascript-lint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/javascript-lint.js" />
         <resource type="download" name="lint.js" location="ru/mail/jira/plugins/jsincluder/codemirror/lint.js" />
         <resource type="download" name="lint.css" location="ru/mail/jira/plugins/jsincluder/codemirror/lint.css" />
+        <resource type="download" name="fullscreen.js" location="ru/mail/jira/plugins/jsincluder/codemirror/fullscreen.js" />
     </web-resource>
 
     <webwork1 key="configuration-action" class="java.lang.Object" roles-required="admin">

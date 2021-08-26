@@ -1,9 +1,11 @@
-require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/confirm-dialog'], function($, Backbone, ConfigurationDialog, ConfirmDialog) {
+require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/confirm-dialog'], function($, _, Backbone, ConfigurationDialog, ConfirmDialog) {
     AJS.toInit(function() {
         /* Models */
         var Script = Backbone.Model.extend();
         var ScriptView = Backbone.Model.extend({urlRoot: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/script/'});
         var Binding = Backbone.Model.extend();
+        var allProjects = {id: -1, name: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.project.all')};
+        var filters = {};
 
         /* Collections */
         var ScriptCollection = Backbone.Collection.extend({
@@ -41,6 +43,12 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
                 this.collection.on('add', this._addScript, this);
                 this.collection.on('change', this._changeScript, this);
                 this.collection.on('remove', this._removeScript, this);
+                var jsincluderFilters = $(".jsincluder-filters");
+                this._initProjectField(jsincluderFilters);
+                this._initIssueTypesField(jsincluderFilters);
+                this._initContexSelect(jsincluderFilters);
+                this._initProjectNameInput(jsincluderFilters);
+                this.debouncedFilterScripts = _.debounce(this._filterScripts.bind(this), 100);
             },
             startLoadingScriptsCallback: function() {
                 AJS.dim();
@@ -151,7 +159,165 @@ require(['jquery', 'backbone', 'jsincluder/configuration-dialog', 'jsincluder/co
             },
             _removeScript: function(script) {
                 $('#jsincluder-scripts tr[id="' + script.id + '"]').remove();
+            },
+            _filterScripts: function (newFilterObj){
+                Object.assign(filters, newFilterObj);
+                if(this.collection && this.collection.models) {
+                    this.collection.each(function(model) {
+                        var attributes = model.attributes;
+                        var hideResult = false;
+                        if( filters
+                            && filters.projectName !== undefined
+                            && filters.projectName !== ""
+                            && !attributes.name.toLowerCase().includes(filters.projectName.toLowerCase())) {
+                            hideResult = true;
+                        } else {
+                            hideResult = false;
+                            var bindings = attributes.bindings;
+                            bindings.forEach( (binding) => {
+                                if(filters.projectId !== undefined && filters.projectId !== "-1" && binding.project.id !== parseInt(filters.projectId)){
+                                    hideResult = true;
+                                } else {
+                                    hideResult = false;
+                                    if (filters.contextSelected !== undefined
+                                        && filters.contextSelected !== "Select context"
+                                        && !binding.enabledContexts.includes(filters.contextSelected)) {
+                                        hideResult = true;
+                                    } else {
+                                        hideResult = false;
+                                        if (filters.issueType !== undefined){
+                                            hideResult = true;
+                                            binding.issueTypes.forEach(issueType => {
+                                                if (filters.issueType === issueType.id) {
+                                                    hideResult = false;
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                        if(hideResult) {
+                            $('#jsincluder-scripts tr[id="' + attributes.id + '"]').hide();
+                        } else {
+                            $('#jsincluder-scripts tr[id="' + attributes.id + '"]').show();
+                        }
+                    });
+                }
+
+            },
+            _initProjectField: function($row) {
+                $row.find('.jsincluder-filter-project').auiSelect2({
+                    placeholder: AJS.I18n.getText('common.words.project'),
+                    ajax: {
+                        url: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/project',
+                        dataType: 'json',
+                        data: function(filter) {
+                            return {
+                                filter: filter
+                            };
+                        },
+                        results: function(data) {
+                            results = [{
+                                name: "Projects",
+                                children: [allProjects]
+                            }];
+
+                            if (data.projects) {
+                                results[0].children.push(...data.projects.map(c => {
+                                    c.type = "project";
+                                    return c;
+                                }));
+                            }
+
+                            if (data.categories) {
+                                results.push({
+                                    name: "Categories",
+                                    children: data.categories.map(c => {
+                                        c.type = "category";
+                                        return c;
+                                    })
+                                });
+                            }
+                            return {
+                                results: results
+                            };
+                        },
+                        cache: true
+                    },
+                    dropdownAutoWidth: false,
+                    formatResult: function(project) {
+                        return JIRA.Templates.Plugins.JsIncluder.projectField({
+                            project: project
+                        });
+                    },
+                    formatSelection: function(project) {
+                        return JIRA.Templates.Plugins.JsIncluder.projectField({
+                            project: project
+                        });
+                    },
+                }).on("change", {that:this}, function (e) {
+                    if(e) {
+                        e.data.that.debouncedFilterScripts({projectId:e.val});
+                    }
+                });
+            },
+            _initIssueTypesField: function($row) {
+                $row.find(".jsincluder-filter-issueTypes").auiSelect2({
+                    placeholder: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all'),
+                    allowClear: true,
+                    multiple: false,
+                    ajax: {
+                        url: AJS.contextPath() + "/rest/api/2/issuetype",
+                        dataType: 'json',
+                        data: function(filter) {
+                            return {
+                                filter: filter
+                            };
+                        },
+                        results: function(data) {
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: true
+                    },
+                    dropdownAutoWidth: false,
+                    formatResult: function(issueType) {
+                        return JIRA.Templates.Plugins.JsIncluder.issueTypeField({
+                            issueType: issueType
+                        });
+                    },
+                    formatSelection: function(issueType) {
+                        return JIRA.Templates.Plugins.JsIncluder.issueTypeField({
+                            issueType: issueType
+                        });
+                    }
+                }).on("change", {that:this}, function (e) {
+                    if (e) {
+                        e.data.that.debouncedFilterScripts({issueType:e.val});
+                    }
+                });
+            },
+            _initContexSelect: function($row) {
+                $row.find(".jsincluder-filter-context").auiSelect2({
+                    placeholder:"asd",
+                    dropdownAutoWidth: false,
+                    allowClear: true,
+                }).on("change", {that:this}, function (e) {
+                    if (e) {
+                        e.data.that.debouncedFilterScripts({contextSelected:e.val});
+                    }
+                });
+            },
+            _initProjectNameInput: function ($row) {
+                $row.find("#jsincluder-filters-project-name").on("input", {that:this}, function (e) {
+                    if (e) {
+                        e.data.that.debouncedFilterScripts({projectName:$("#jsincluder-filters-project-name").val()});
+                    }
+                });
             }
+
         });
 
         var mainView = new MainView({collection: scriptCollection});

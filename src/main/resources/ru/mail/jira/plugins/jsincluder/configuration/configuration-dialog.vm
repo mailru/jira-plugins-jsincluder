@@ -37,9 +37,15 @@
                     <div class="jsincluder-configuration-dialog-code">
                         <div class="jsincluder-configuration-dialog-code-item">
                             <div class="jsincluder-configuration-dialog-code-item-name expanded">
-                                <span class="aui-icon aui-icon-small aui-iconfont-chevron-down"></span>
-                                <div class="jsincluder-configuration-dialog-code-item-name-container">
-                                    <h4>JavaScript</h4>
+                                <div class="jsincluder-configuration-dialog-code-item-left-part">
+                                    <span class="aui-icon aui-icon-small aui-iconfont-chevron-down"></span>
+                                    <div class="jsincluder-configuration-dialog-code-item-name-container">
+                                        <h4>JavaScript</h4>
+                                    </div>
+                                </div>
+                                <div class="jsincluder-configuration-dialog-code-item-right-part">
+                                    <span class="aui-icon aui-icon-small aui-icon-wait aui-iconfont-error js-includer-error" id="error-tooltip-js"></span>
+                                    <span class="aui-icon aui-icon-small aui-iconfont-vid-full-screen-on zoom-button" id="zoom-js-editor"></span>
                                 </div>
                             </div>
                             <div class="jsincluder-configuration-dialog-code-item-input js-field">
@@ -48,9 +54,15 @@
                         </div>
                         <div class="jsincluder-configuration-dialog-code-item">
                             <div class="jsincluder-configuration-dialog-code-item-name">
-                                <span class="aui-icon aui-icon-small aui-iconfont-chevron-right"></span>
-                                <div class="jsincluder-configuration-dialog-code-item-name-container">
-                                    <h4>CSS</h4>
+                                <div class="jsincluder-configuration-dialog-code-item-left-part">
+                                    <span class="aui-icon aui-icon-small aui-iconfont-chevron-right"></span>
+                                    <div class="jsincluder-configuration-dialog-code-item-name-container">
+                                        <h4>CSS</h4>
+                                    </div>
+                                </div>
+                                <div class="jsincluder-configuration-dialog-code-item-right-part">
+                                    <span class="aui-icon aui-icon-small aui-icon-wait aui-iconfont-error js-includer-error" id="error-tooltip-css"></span>
+                                    <span class="aui-icon aui-icon-small aui-iconfont-vid-full-screen-on zoom-button hidden" id="zoom-css-editor"></span>
                                 </div>
                             </div>
                             <div class="jsincluder-configuration-dialog-code-item-input css-field hidden">
