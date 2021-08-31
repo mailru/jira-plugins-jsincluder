@@ -321,36 +321,36 @@ define('jsincluder/configuration-dialog', ['jquery', 'underscore', 'backbone'], 
         _zoomDialog: function($zoomedEditorWrapper, codemirrorEditor) {
             if($zoomedEditorWrapper && codemirrorEditor) {
                 var body = $('body');
-                var CodeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
-                var CodeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom');
-                if(CodeMirrorFullscreenTop.length === 0) {
+                var codeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
+                var codeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom');
+                if(codeMirrorFullscreenTop.length === 0) {
                     body.append('<div class="CodeMirror-fullscreen-top"><span class="aui-icon aui-icon-small aui-iconfont-vid-full-screen-off"></span></div>');
-                    CodeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
+                    codeMirrorFullscreenTop = $('.CodeMirror-fullscreen-top');
                 }
-                if(CodeMirrorFullscreenBottom.length === 0) {
+                if(codeMirrorFullscreenBottom.length === 0) {
                     body.append('<div class="CodeMirror-fullscreen-bottom"></div>');
-                    CodeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom')
+                    codeMirrorFullscreenBottom = $('.CodeMirror-fullscreen-bottom')
                 }
 
 
                 $zoomedEditorWrapper.after('<div id="zoomedEditorAnchor"></div>');
                 $zoomedEditorWrapper.attr('id', 'zoomedEditorAnchorEditor');
                 body.append($zoomedEditorWrapper);
-                CodeMirrorFullscreenTop.show();
+                codeMirrorFullscreenTop.show();
 
                 $(".CodeMirror-fullscreen-bottom").show();
                 codemirrorEditor.setOption("fullScreen", true);
 
-                CodeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").off("click");
-                CodeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").on("click", function () {
+                codeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").off("click");
+                codeMirrorFullscreenTop.find(".aui-iconfont-vid-full-screen-off").on("click", function () {
                     var zoomedEditorAnchor = $("#zoomedEditorAnchor");
                     if (zoomedEditorAnchor.length > 0) {
                         codemirrorEditor.setOption("fullScreen", false);
                         var zoomedEditorAnchorEditor = $("#zoomedEditorAnchorEditor");
                         zoomedEditorAnchorEditor.removeAttr('id');
                         zoomedEditorAnchor.replaceWith(zoomedEditorAnchorEditor);
-                        CodeMirrorFullscreenTop.hide();
-                        CodeMirrorFullscreenBottom.hide();
+                        codeMirrorFullscreenTop.hide();
+                        codeMirrorFullscreenBottom.hide();
                         $(codemirrorEditor.getWrapperElement()).css("resize", "vertical");
                     }
                 });
