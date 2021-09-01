@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.mail.jira.plugins</groupId>
     <artifactId>jsincluder</artifactId>
-    <version>2.5.3-SNAPSHOT</version>
+    <version>2.5.3</version>
     <name>Mail.ru Plugin: JsIncluder</name>
     <description>Includes specified JS-scripts to particular pages.</description>
     <packaging>atlassian-plugin</packaging>
@@ -19,6 +19,6 @@
         <connection>scm:git:ssh://git@github.com:mailru/jira-plugins-jsincluder.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:mailru/jira-plugins-jsincluder.git</developerConnection>
         <url>https://github.com/mailru/jira-plugins-jsincluder</url>
-        <tag>HEAD</tag>
+        <tag>jsincluder-2.5.3</tag>
     </scm>
 </project>
