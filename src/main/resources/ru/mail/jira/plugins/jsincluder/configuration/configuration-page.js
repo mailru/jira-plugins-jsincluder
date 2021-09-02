@@ -166,35 +166,15 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                     this.collection.each(function(model) {
                         var attributes = model.attributes;
                         var hideResult = false;
-                        if( filters
-                            && filters.projectName !== undefined
-                            && filters.projectName !== ""
-                            && !attributes.name.toLowerCase().includes(filters.projectName.toLowerCase())) {
+                        if(this._scriptNameFilter(filters.projectName,attributes.name)) {
                             hideResult = true;
                         } else {
                             hideResult = false;
                             var bindings = attributes.bindings;
                             bindings.forEach( (binding) => {
-                                if(filters.projectId !== undefined && filters.projectId !== "-1" && binding.project.id !== parseInt(filters.projectId)){
-                                    hideResult = true;
-                                } else {
-                                    hideResult = false;
-                                    if (filters.contextSelected !== undefined
-                                        && filters.contextSelected !== "Select context"
-                                        && !binding.enabledContexts.includes(filters.contextSelected)) {
-                                        hideResult = true;
-                                    } else {
-                                        hideResult = false;
-                                        if (filters.issueType !== undefined){
-                                            hideResult = true;
-                                            binding.issueTypes.forEach(issueType => {
-                                                if (filters.issueType === issueType.id) {
-                                                    hideResult = false;
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
+                                hideResult = this._projectFilter(filters.projectId, binding)
+                                    || this._contextFilter(filters.contextSelected, binding.enabledContexts)
+                                    || this._issueTypesFilter(filters.issueType, binding);
                             })
                         }
                         if(hideResult) {
@@ -202,13 +182,47 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                         } else {
                             $('#jsincluder-scripts tr[id="' + attributes.id + '"]').show();
                         }
+                    },{
+                        _scriptNameFilter:this._scriptNameFilter,
+                        _projectFilter:this._projectFilter,
+                        _issueTypesFilter:this._issueTypesFilter,
+                        _contextFilter:this._contextFilter,
                     });
                 }
 
             },
+            _scriptNameFilter: function (neededProjectName, projectName){
+                return neededProjectName !== undefined
+                    && neededProjectName !== ""
+                    && !projectName.toLowerCase().includes(neededProjectName.toLowerCase());
+            },
+            _projectFilter: function (projectId, binding){
+                if(binding && binding.project){
+                    return projectId !== undefined && projectId !== "" && projectId !== "-1" && binding.project.id !== parseInt(projectId);
+                } else return false;
+            },
+            _issueTypesFilter: function (issueType, binding){
+                if(issueType !== undefined && issueType !== "") {
+                    var result = true;
+                    if (binding && _.isArray(binding.issueTypes)) {
+                        binding.issueTypes.forEach(bindingIssueType => {
+                            if (issueType === bindingIssueType.id) {
+                                result = false;
+                            }
+                        });
+                    }
+                    return result;
+                } else return false;
+            },
+            _contextFilter: function (contextSelected,enabledContexts){
+                return contextSelected !== undefined
+                    && contextSelected.text !== "Select context"
+                    && !enabledContexts.includes(contextSelected.text)
+            },
             _initProjectField: function($row) {
                 $row.find('.jsincluder-filter-project').auiSelect2({
                     placeholder: AJS.I18n.getText('common.words.project'),
+                    allowClear: true,
                     ajax: {
                         url: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/project',
                         dataType: 'json',
@@ -301,12 +315,13 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
             },
             _initContexSelect: function($row) {
                 $row.find(".jsincluder-filter-context").auiSelect2({
-                    placeholder:"asd",
+                    placeholder: AJS.I18n.getText( "ru.mail.jira.plugins.jsincluder.filter.select.context" ),
                     dropdownAutoWidth: false,
                     allowClear: true,
+                    data:[{id:0,text:'Create'},{id:1,text:'View'},{id:2,text:'Edit'},{id:3,text:'Transition'}],
                 }).on("change", {that:this}, function (e) {
                     if (e) {
-                        e.data.that.debouncedFilterScripts({contextSelected:e.val});
+                        e.data.that.debouncedFilterScripts({contextSelected:e.added});
                     }
                 });
             },

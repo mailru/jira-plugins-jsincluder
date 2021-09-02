@@ -229,3 +229,16 @@ a.jsincluder-binding-delete:link {
     gap: 5px;
 }
 
+.aui-select2-container.select2-allowclear .select2-choice .select2-search-choice-close {
+    display: block;
+    opacity: 0.7;
+    top: 1px;
+    background: 100% -50% no-repeat;
+}
+.aui-select2-container.select2-allowclear .select2-choice .select2-search-choice-close:before {
+    content: none;
+}
+
+.aui-select2-container.select2-allowclear .select2-choice .select2-search-choice-close:hover {
+    opacity: 1;
+}
