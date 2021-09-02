@@ -191,19 +191,18 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                 }
 
             },
-            _scriptNameFilter: function (neededProjectName,projectName){
-                return filters
-                    && neededProjectName !== undefined
+            _scriptNameFilter: function (neededProjectName, projectName){
+                return neededProjectName !== undefined
                     && neededProjectName !== ""
                     && !projectName.toLowerCase().includes(neededProjectName.toLowerCase());
             },
             _projectFilter: function (projectId, binding){
                 if(binding && binding.project){
-                    return projectId !== undefined && projectId !== "-1" && binding.project.id !== parseInt(projectId);
+                    return projectId !== undefined && projectId !== "" && projectId !== "-1" && binding.project.id !== parseInt(projectId);
                 } else return false;
             },
             _issueTypesFilter: function (issueType, binding){
-                if(issueType !== undefined) {
+                if(issueType !== undefined && issueType !== "") {
                     var result = true;
                     if (binding && _.isArray(binding.issueTypes)) {
                         binding.issueTypes.forEach(bindingIssueType => {
@@ -217,12 +216,13 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
             },
             _contextFilter: function (contextSelected,enabledContexts){
                 return contextSelected !== undefined
-                    && contextSelected !== "Select context"
-                    && !enabledContexts.includes(contextSelected)
+                    && contextSelected.text !== "Select context"
+                    && !enabledContexts.includes(contextSelected.text)
             },
             _initProjectField: function($row) {
                 $row.find('.jsincluder-filter-project').auiSelect2({
                     placeholder: AJS.I18n.getText('common.words.project'),
+                    allowClear: true,
                     ajax: {
                         url: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/project',
                         dataType: 'json',
@@ -315,12 +315,13 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
             },
             _initContexSelect: function($row) {
                 $row.find(".jsincluder-filter-context").auiSelect2({
-                    placeholder:"asd",
+                    placeholder: AJS.I18n.getText( "ru.mail.jira.plugins.jsincluder.filter.select.context" ),
                     dropdownAutoWidth: false,
                     allowClear: true,
+                    data:[{id:0,text:'Create'},{id:1,text:'View'},{id:2,text:'Edit'},{id:3,text:'Transition'}],
                 }).on("change", {that:this}, function (e) {
                     if (e) {
-                        e.data.that.debouncedFilterScripts({contextSelected:e.val});
+                        e.data.that.debouncedFilterScripts({contextSelected:e.added});
                     }
                 });
             },
