@@ -36,6 +36,8 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                 'click .jsincluder-disableScript': 'disableScript',
                 'click .jsincluder-expandBindings': 'expandBindings'
             },
+            issueTypesFilterOptions: [],
+            projectsFilterOptions: [{id: "-1", text: "All projects", iconUrl: ""}],
             initialize: function() {
                 this.userData = {};
                 this.collection.on('request', this.startLoadingScriptsCallback);
@@ -153,12 +155,61 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
             _addScript: function(script) {
                 this.userData[script.id] = {expandBindings: true};
                 $('#jsincluder-scripts').append(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON(), expandBindings: true}));
+                this._addIssueTypesFilter(script);
+                this._addProjectFilter(script);
             },
             _changeScript: function(script) {
                 $('#jsincluder-scripts tr[id="' + script.id + '"]').replaceWith(JIRA.Templates.Plugins.JsIncluder.scriptEntry({script: script.toJSON(), expandBindings: this.userData[script.id].expandBindings}));
             },
             _removeScript: function(script) {
                 $('#jsincluder-scripts tr[id="' + script.id + '"]').remove();
+            },
+            _addIssueTypesFilter(script) {
+                var canAdd = true;
+                script.attributes.bindings.forEach((binding) => {
+                    binding.issueTypes.forEach(bindingIssueType => {
+                        canAdd = true;
+                        this.issueTypesFilterOptions.forEach((issueType) => {
+                            if (bindingIssueType.id === issueType.id &&
+                                bindingIssueType.name === issueType.text &&
+                                bindingIssueType.iconUrl === issueType.iconUrl) {
+                                canAdd = false;
+                            }
+                        })
+                        if (canAdd)
+                            this.issueTypesFilterOptions.push({
+                                    id: bindingIssueType.id,
+                                    text: bindingIssueType.name,
+                                    iconUrl: bindingIssueType.iconUrl});
+                    });
+                });
+            },
+            _addProjectFilter(script) {
+                var canAdd = true;
+                script.attributes.bindings.forEach((binding) => {
+                    this.projectsFilterOptions.forEach((project) => {
+                        if(binding.project !== undefined) {
+                            if (binding.project.id === project.id &&
+                                binding.project.name === project.text &&
+                                binding.project.avatarUrl === project.iconUrl) {
+                                canAdd = false;
+                            }
+                        }
+                    })
+                    if(canAdd && binding.project !== undefined)
+                        this.projectsFilterOptions.push({
+                            id: binding.project.id,
+                            text: binding.project.name,
+                            iconUrl: binding.project.avatarUrl});
+                });
+            },
+            formatFilterOption(state) {
+                if (!state.id) return state.text;
+                if(state.iconUrl !== undefined && state.iconUrl !== "" )
+                    return "<img class='filterOption'  alt='"+state.text+"' src='"+state.iconUrl+"' width='16px' height='16px'/> "
+                    + "<span class='filterOption'>" + state.text + "</span>";
+                else return "<span class='filterOption'>" + state.text + "</span>";
+
             },
             _filterScripts: function (newFilterObj){
                 Object.assign(filters, newFilterObj);
@@ -223,53 +274,11 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                 $row.find('.jsincluder-filter-project').auiSelect2({
                     placeholder: AJS.I18n.getText('common.words.project'),
                     allowClear: true,
-                    ajax: {
-                        url: AJS.contextPath() + '/rest/jsincluder/1.0/configuration/project',
-                        dataType: 'json',
-                        data: function(filter) {
-                            return {
-                                filter: filter
-                            };
-                        },
-                        results: function(data) {
-                            results = [{
-                                name: "Projects",
-                                children: [allProjects]
-                            }];
-
-                            if (data.projects) {
-                                results[0].children.push(...data.projects.map(c => {
-                                    c.type = "project";
-                                    return c;
-                                }));
-                            }
-
-                            if (data.categories) {
-                                results.push({
-                                    name: "Categories",
-                                    children: data.categories.map(c => {
-                                        c.type = "category";
-                                        return c;
-                                    })
-                                });
-                            }
-                            return {
-                                results: results
-                            };
-                        },
-                        cache: true
-                    },
+                    multiple: false,
+                    data: this.projectsFilterOptions,
                     dropdownAutoWidth: false,
-                    formatResult: function(project) {
-                        return JIRA.Templates.Plugins.JsIncluder.projectField({
-                            project: project
-                        });
-                    },
-                    formatSelection: function(project) {
-                        return JIRA.Templates.Plugins.JsIncluder.projectField({
-                            project: project
-                        });
-                    },
+                    formatResult: this.formatFilterOption,
+                    formatSelection: this.formatFilterOption,
                 }).on("change", {that:this}, function (e) {
                     if(e) {
                         e.data.that.debouncedFilterScripts({projectId:e.val});
@@ -281,32 +290,10 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                     placeholder: AJS.I18n.getText('ru.mail.jira.plugins.jsincluder.configuration.tab.bindings.issueTypes.all'),
                     allowClear: true,
                     multiple: false,
-                    ajax: {
-                        url: AJS.contextPath() + "/rest/api/2/issuetype",
-                        dataType: 'json',
-                        data: function(filter) {
-                            return {
-                                filter: filter
-                            };
-                        },
-                        results: function(data) {
-                            return {
-                                results: data
-                            };
-                        },
-                        cache: true
-                    },
+                    data:this.issueTypesFilterOptions,
                     dropdownAutoWidth: false,
-                    formatResult: function(issueType) {
-                        return JIRA.Templates.Plugins.JsIncluder.issueTypeField({
-                            issueType: issueType
-                        });
-                    },
-                    formatSelection: function(issueType) {
-                        return JIRA.Templates.Plugins.JsIncluder.issueTypeField({
-                            issueType: issueType
-                        });
-                    }
+                    formatResult: this.formatFilterOption,
+                    formatSelection: this.formatFilterOption,
                 }).on("change", {that:this}, function (e) {
                     if (e) {
                         e.data.that.debouncedFilterScripts({issueType:e.val});
