@@ -207,14 +207,6 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                             avatarUrl: binding.project.avatarUrl});
                 });
             },
-            formatFilterOption(state) {
-                if (!state.id) return state.text;
-                if(state.iconUrl !== undefined && state.iconUrl !== "" )
-                    return "<img class='filterOption'  alt='"+state.text+"' src='"+state.iconUrl+"' width='16px' height='16px'/> "
-                    + "<span class='filterOption'>" + state.text + "</span>";
-                else return "<span class='filterOption'>" + state.text + "</span>";
-
-            },
             _filterScripts: function (event) {
                 switch (event.target.id){
                     case 'jsincluder-filters-project-name':
