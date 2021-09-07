@@ -40,7 +40,7 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                 'change #jsincluder-filter-project': 'debouncedFilterScripts',
             },
             issueTypesFilterOptions: [],
-            projectsFilterOptions: [{id: -1, name: "All projects", avatarUrl: ""}],
+            projectsFilterOptions: [{id: -1,text:"All projects", name: "All projects", avatarUrl: ""}],
             initialize: function() {
                 this.userData = {};
                 this.collection.on('request', this.startLoadingScriptsCallback);
@@ -181,6 +181,7 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                         if (canAdd)
                             this.issueTypesFilterOptions.push({
                                     id: bindingIssueType.id,
+                                    text: bindingIssueType.name,
                                     name: bindingIssueType.name,
                                     iconUrl: bindingIssueType.iconUrl});
                     });
@@ -201,6 +202,7 @@ require(['jquery', 'underscore', 'backbone', 'jsincluder/configuration-dialog', 
                     if(canAdd && binding.project !== undefined)
                         this.projectsFilterOptions.push({
                             id: binding.project.id,
+                            text: binding.project.name,
                             name: binding.project.name,
                             avatarUrl: binding.project.avatarUrl});
                 });
