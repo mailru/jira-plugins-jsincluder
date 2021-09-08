@@ -242,3 +242,7 @@ a.jsincluder-binding-delete:link {
 .aui-select2-container.select2-allowclear .select2-choice .select2-search-choice-close:hover {
     opacity: 1;
 }
+
+.filterOption {
+    vertical-align: middle;
+}

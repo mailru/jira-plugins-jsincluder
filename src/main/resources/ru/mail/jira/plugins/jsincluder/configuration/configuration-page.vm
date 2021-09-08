@@ -26,9 +26,9 @@
         </header>
         <div class="jsincluder-filters">
             <input placeholder='$i18n.getText( "ru.mail.jira.plugins.jsincluder.filter.script.name" )' type="text" id="jsincluder-filters-project-name"/>
-            <input type="hidden" class="select full-width-field jsincluder-filter-project"/>
-            <input type="hidden" class="select full-width-field jsincluder-filter-issueTypes"/>
-            <input type="hidden" class="jsincluder-filter-context"/>
+            <input type="hidden" class="select full-width-field" id="jsincluder-filter-project"/>
+            <input type="hidden" class="select full-width-field" id="jsincluder-filter-issueTypes"/>
+            <input type="hidden" id="jsincluder-filter-context"/>
         </div>
         <table class="aui aui-table-rowhover">
             <thead>
